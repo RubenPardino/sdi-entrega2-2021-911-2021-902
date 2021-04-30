@@ -1,50 +1,50 @@
-module.exports = function(app, gestorBD) {
+module.exports = function (app, gestorBD) {
 
-    app.get("/api/cancion", function(req, res) {
-        gestorBD.obtenerCanciones( {} , function(canciones) {
+    app.get("/api/cancion", function (req, res) {
+        gestorBD.obtenerOfertas({}, function (canciones) {
             if (canciones == null) {
                 res.status(500);
                 res.json({
-                    error : "se ha producido un error"
+                    error: "se ha producido un error"
                 })
             } else {
                 res.status(200);
-                res.send( JSON.stringify(canciones) );
+                res.send(JSON.stringify(canciones));
             }
         });
     });
 
-    app.get("/api/cancion/:id", function(req, res) {
-        let criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id)}
+    app.get("/api/cancion/:id", function (req, res) {
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
 
-        gestorBD.obtenerCanciones(criterio,function(canciones){
-            if ( canciones == null ){
+        gestorBD.obtenerOfertas(criterio, function (canciones) {
+            if (canciones == null) {
                 res.status(500);
                 res.json({
-                    error : "se ha producido un error"
+                    error: "se ha producido un error"
                 })
             } else {
                 res.status(200);
-                res.send( JSON.stringify(canciones[0]) );
+                res.send(JSON.stringify(canciones[0]));
             }
         });
     });
 
-    app.delete("/api/cancion/:id", function(req, res) {
+    app.delete("/api/cancion/:id", function (req, res) {
 
         let usuario = res.usuario;
 
-        let criterio = { "_id" : gestorBD.mongo.ObjectID(req.params.id)}
-        let criterioCancion = { "_id" : gestorBD.mongo.ObjectID(req.params.id) };
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
+        let criterioCancion = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
-        gestorBD.obtenerCanciones(criterioCancion,function(cancion) {
+        gestorBD.obtenerOfertas(criterioCancion, function (cancion) {
             if (cancion == null || cancion[0].autor !== usuario) {
                 res.status(403);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
-                gestorBD.eliminarCancion(criterio, function (canciones) {
+                gestorBD.eliminarOferta(criterio, function (canciones) {
                     if (canciones == null) {
                         res.status(500);
                         res.json({
@@ -59,7 +59,7 @@ module.exports = function(app, gestorBD) {
         });
     });
 
-    app.put("/api/cancion/:id", function(req, res) {
+    app.put("/api/cancion/:id", function (req, res) {
 
         let usuario = res.usuario;
 
@@ -102,14 +102,14 @@ module.exports = function(app, gestorBD) {
             }
         }
 
-        gestorBD.obtenerCanciones(criterioCancion, function (canciones) {
+        gestorBD.obtenerOfertas(criterioCancion, function (canciones) {
             if (canciones == null || canciones[0].autor !== usuario) {
                 res.status(403);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
-                gestorBD.modificarCancion(criterio, cancion, function (result) {
+                gestorBD.modificarOferta(criterio, cancion, function (result) {
                     if (result == null) {
                         res.status(500);
                         res.json({
@@ -127,7 +127,7 @@ module.exports = function(app, gestorBD) {
         });
     });
 
-    app.post("/api/cancion", function(req, res) {
+    app.post("/api/cancion", function (req, res) {
 
         let cancion = {};
 
@@ -165,44 +165,44 @@ module.exports = function(app, gestorBD) {
             }
         }
 
-        gestorBD.insertarCancion(cancion, function(id){
+        gestorBD.insertarOferta(cancion, function (id) {
             if (id == null) {
                 res.status(500);
                 res.json({
-                    error : "se ha producido un error"
+                    error: "se ha producido un error"
                 })
             } else {
                 res.status(201);
                 res.json({
-                    mensaje : "canción insertada",
-                    _id : id
+                    mensaje: "canción insertada",
+                    _id: id
                 })
             }
         });
     });
 
-    app.post("/api/autenticar/", function(req, res) {
+    app.post("/api/autenticar/", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex')
 
         let criterio = {
-            email : req.body.email,
-            password : seguro
+            email: req.body.email,
+            password: seguro
         }
 
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 res.status(401);
                 res.json({
-                    autenticado : false
+                    autenticado: false
                 })
             } else {
                 let token = app.get('jwt').sign(
-                    {usuario: criterio.email , tiempo: Date.now()/1000},
+                    {usuario: criterio.email, tiempo: Date.now() / 1000},
                     "secreto");
                 res.status(200);
                 res.json({
-                    autenticado : true,
-                    token : token
+                    autenticado: true,
+                    token: token
                 })
             }
         })

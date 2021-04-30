@@ -1,6 +1,6 @@
 module.exports = function (app, swig, gestorBD) {
 
-    app.get('/canciones/agregar', function (req, res) {
+    app.get('/ofertas/agregar', function (req, res) {
 
         let respuesta = swig.renderFile('views/bagregar.html', {});
         res.send(respuesta);
@@ -168,7 +168,7 @@ module.exports = function (app, swig, gestorBD) {
     app.get("/publicaciones", function (req, res) {
         let criterio = {autor: req.session.usuario};
 
-        gestorBD.obtenerCanciones(criterio, function (canciones) {
+        gestorBD.obtenerOfertas(criterio, function (canciones) {
             if (canciones == null) {
                 res.send("Error al listar ");
             } else {

@@ -5,7 +5,7 @@
 
 <!-- Agregar Canción -->
 <div class="row text-right">
-	<a href="/canciones/agregar" class="btn btn-info" role="button">Agregar canción</a>
+	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar oferta</a>
 </div>
 
 <div class="table-responsive">
@@ -22,8 +22,8 @@
 			<tr>
 				<td>{{ cancion.nombre }}</td>
 				<td>{{ cancion.genero }}</td>
-				<td><a href="/cancion/modificar/{{ cancion._id.toString() }}">Modificar</a> <br>
-					<a href="/cancion/eliminar/{{ cancion._id.toString() }}">Eliminar</a> <br>
+				<td><a href="/oferta/modificar/{{ cancion._id.toString() }}">Modificar</a> <br>
+					<a href="/oferta/eliminar/{{ cancion._id.toString() }}">Eliminar</a> <br>
 			    </td>
 			</tr>
 		{% endfor %}
@@ -33,7 +33,7 @@
 
 <!-- Agregar Canción -->
 <div class="row text-right">
-	<a href="/canciones/agregar" class="btn btn-info" role="button">Agregar canción</a>
+	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar canción</a>
 </div>
 
 {% endblock %}

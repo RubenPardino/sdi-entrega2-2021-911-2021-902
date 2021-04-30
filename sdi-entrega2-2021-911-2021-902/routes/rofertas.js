@@ -30,10 +30,10 @@ module.exports = function (app, swig, gestorBD) {
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             gestorBD.obtenerCompras(usuarioOferta, function (compras) {
                 if (ofertas == null) {
-                    res.send("Error al recuperar la canción.");
+                    res.send("Error al recuperar la oferta.");
                 } else {
                     if (req.session.usuario == ofertas[0].autor) {
-                        res.send("La canción es suya");
+                        res.send("La oferta es suya");
                     } else {
                         if (compras.length == 0) {
                             gestorBD.insertarCompra(compra, function (idCompra) {
@@ -59,16 +59,16 @@ module.exports = function (app, swig, gestorBD) {
             if (compras == null) {
                 res.send("Error al listar");
             } else {
-                let cancionesCompradasIds = [];
+                let ofertasCompradasIds = [];
                 for (i = 0; i < compras.length; i++) {
-                    cancionesCompradasIds.push(compras[i].cancionId);
+                    ofertasCompradasIds.push(compras[i].cancionId);
                 }
 
-                let criterio = {"_id": {$in: cancionesCompradasIds}};
+                let criterio = {"_id": {$in: ofertasCompradasIds}};
                 gestorBD.obtenerOfertas(criterio, function (ofertas) {
                     let respuesta = swig.renderFile('views/bcompras.html',
                         {
-                            canciones: ofertas
+                            ofertas: ofertas
                         });
                     res.send(respuesta);
                 })
@@ -76,32 +76,6 @@ module.exports = function (app, swig, gestorBD) {
         })
     });
 
-    app.get("/canciones", function (req, res) {
-
-        let canciones = [{
-            "nombre": "Blank space",
-            "precio": "1.2"
-        }, {
-            "nombre": "See you again",
-            "precio": "1.3"
-        }, {
-            "nombre": "Uptown Funk",
-            "precio": "1.1"
-        }];
-
-        let respuesta = swig.renderFile('views/btienda.html', {
-            vendedor: 'Tienda de canciones',
-            canciones: canciones
-        });
-
-        res.send(respuesta);
-    });
-
-    app.get('/suma', function (req, res) {
-        let respuesta = parseInt(req.query.num1) + parseInt(req.query.num2);
-
-        res.send(String(respuesta));
-    });
 
     app.get('/oferta/modificar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
@@ -111,7 +85,7 @@ module.exports = function (app, swig, gestorBD) {
             } else {
                 let respuesta = swig.renderFile('views/bofertaModificar.html',
                     {
-                        cancion: ofertas[0]
+                        oferta: ofertas[0]
                     });
                 res.send(respuesta);
             }
@@ -209,9 +183,8 @@ module.exports = function (app, swig, gestorBD) {
                                 ofertas[0].usd = cambioUSD * ofertas[0].precio;
                                 let respuesta = swig.renderFile('views/boferta.html',
                                     {
-                                        cancion: ofertas[0],
+                                        oferta: ofertas[0],
                                         comentarios: comentarios,
-                                        audio: true
                                     });
                                 res.send(respuesta);
                             })
@@ -233,9 +206,8 @@ module.exports = function (app, swig, gestorBD) {
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
                                     let respuesta = swig.renderFile('views/boferta.html',
                                         {
-                                            cancion: ofertas[0],
+                                            oferta: ofertas[0],
                                             comentarios: comentarios,
-                                            audio: false
                                         });
                                     res.send(respuesta);
                                 })
@@ -256,9 +228,8 @@ module.exports = function (app, swig, gestorBD) {
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
                                     let respuesta = swig.renderFile('views/boferta.html',
                                         {
-                                            cancion: ofertas[0],
+                                            oferta: ofertas[0],
                                             comentarios: comentarios,
-                                            audio: true
                                         });
                                     res.send(respuesta);
                                 })
@@ -278,7 +249,8 @@ module.exports = function (app, swig, gestorBD) {
             titulo: req.body.titulo,
             precio: req.body.precio,
             detalles: req.body.detalles,
-            fecha: Date.now()
+            fecha: Date.now(),
+            autor: req.session.usuario
         }
         // Conectarse
         gestorBD.insertarOferta(oferta, function (id) {
@@ -290,7 +262,7 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
-    app.post('/cancion/modificar/:id', function (req, res) {
+    app.post('/oferta/modificar/:id', function (req, res) {
         let id = req.params.id;
         let criterio = {"_id": gestorBD.mongo.ObjectID(id)};
         let oferta = {

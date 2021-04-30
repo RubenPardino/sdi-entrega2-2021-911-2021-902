@@ -22,8 +22,8 @@
 			<tr>
 				<td>{{ oferta.nombre }}</td>
 				<td>{{ oferta.precio }}</td>
-				<td><a href="/oferta/modificar/{{ cancion._id.toString() }}">Modificar</a> <br>
-					<a href="/oferta/eliminar/{{ cancion._id.toString() }}">Eliminar</a> <br>
+				<td><a href="/oferta/modificar/{{ oferta._id.toString() }}">Modificar</a> <br>
+					<a href="/oferta/eliminar/{{ oferta._id.toString() }}">Eliminar</a> <br>
 			    </td>
 			</tr>
 		{% endfor %}

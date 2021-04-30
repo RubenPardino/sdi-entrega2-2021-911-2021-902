@@ -109,7 +109,7 @@ module.exports = function (app, swig, gestorBD) {
             if (ofertas == null) {
                 res.send(respuesta);
             } else {
-                let respuesta = swig.renderFile('views/bcancionModificar.html',
+                let respuesta = swig.renderFile('views/bofertaModificar.html',
                     {
                         cancion: ofertas[0]
                     });
@@ -156,7 +156,7 @@ module.exports = function (app, swig, gestorBD) {
                 }
                 let respuesta = swig.renderFile('views/btienda.html',
                     {
-                        canciones: ofertas,
+                        ofertas: ofertas,
                         paginas: paginas,
                         actual: pg
                     });
@@ -174,7 +174,7 @@ module.exports = function (app, swig, gestorBD) {
             } else {
                 let respuesta = swig.renderFile('views/bpublicaciones.html',
                     {
-                        canciones: ofertas
+                        ofertas: ofertas
                     });
                 res.send(respuesta);
             }
@@ -207,7 +207,7 @@ module.exports = function (app, swig, gestorBD) {
                                 let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                 // nuevo campo "usd"
                                 ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                let respuesta = swig.renderFile('views/bcancion.html',
+                                let respuesta = swig.renderFile('views/boferta.html',
                                     {
                                         cancion: ofertas[0],
                                         comentarios: comentarios,
@@ -231,7 +231,7 @@ module.exports = function (app, swig, gestorBD) {
                                     let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                     // nuevo campo "usd"
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    let respuesta = swig.renderFile('views/bcancion.html',
+                                    let respuesta = swig.renderFile('views/boferta.html',
                                         {
                                             cancion: ofertas[0],
                                             comentarios: comentarios,
@@ -254,7 +254,7 @@ module.exports = function (app, swig, gestorBD) {
                                     let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                     // nuevo campo "usd"
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    let respuesta = swig.renderFile('views/bcancion.html',
+                                    let respuesta = swig.renderFile('views/boferta.html',
                                         {
                                             cancion: ofertas[0],
                                             comentarios: comentarios,
@@ -274,14 +274,14 @@ module.exports = function (app, swig, gestorBD) {
 
     app.post("/oferta", function (req, res) {
 
-        let cancion = {
-            nombre: req.body.nombre,
+        let oferta = {
+            titulo: req.body.titulo,
             precio: req.body.precio,
             detalles: req.body.detalles,
             fecha: Date.now()
         }
         // Conectarse
-        gestorBD.insertarOferta(cancion, function (id) {
+        gestorBD.insertarOferta(oferta, function (id) {
             if (id == null) {
                 res.send("Error al insertar oferta");
             } else {
@@ -294,8 +294,8 @@ module.exports = function (app, swig, gestorBD) {
         let id = req.params.id;
         let criterio = {"_id": gestorBD.mongo.ObjectID(id)};
         let oferta = {
-            nombre: req.body.nombre,
-            genero: req.body.genero,
+            titulo: req.body.titulo,
+            detalles: req.body.detalles,
             precio: req.body.precio
         }
         gestorBD.modificarOferta(criterio, oferta, function (result) {

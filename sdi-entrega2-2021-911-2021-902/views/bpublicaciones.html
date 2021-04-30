@@ -3,7 +3,7 @@
 {% block contenido_principal %}
 <h2>Mis publicaciones</h2>
 
-<!-- Agregar Canción -->
+<!-- Agregar Oferta -->
 <div class="row text-right">
 	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar oferta</a>
 </div>
@@ -12,16 +12,16 @@
 	<table class="table table-hover">
 		<thead>
 			<tr>
-				<th>Nombre</th>
-				<th>Genero</th>
+				<th>Título</th>
+				<th>Precio</th>
 				<th class="col-md-1"></th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for cancion in canciones %}
+		{% for oferta in ofertas %}
 			<tr>
-				<td>{{ cancion.nombre }}</td>
-				<td>{{ cancion.genero }}</td>
+				<td>{{ oferta.nombre }}</td>
+				<td>{{ oferta.precio }}</td>
 				<td><a href="/oferta/modificar/{{ cancion._id.toString() }}">Modificar</a> <br>
 					<a href="/oferta/eliminar/{{ cancion._id.toString() }}">Eliminar</a> <br>
 			    </td>
@@ -31,9 +31,9 @@
 	</table>
 </div>
 
-<!-- Agregar Canción -->
+<!-- Agregar Oferta -->
 <div class="row text-right">
-	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar canción</a>
+	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar oferta</a>
 </div>
 
 {% endblock %}

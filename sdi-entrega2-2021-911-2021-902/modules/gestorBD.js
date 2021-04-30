@@ -10,14 +10,14 @@ module.exports = {
             if (err) {
                 funcionCallback(null);
             } else {
-                let collection = db.collection('canciones');
+                let collection = db.collection('ofertas');
                 collection.count(function(err, count){
                     collection.find(criterio).skip( (pg-1)*4 ).limit( 4 )
-                        .toArray(function(err, canciones) {
+                        .toArray(function(err, ofertas) {
                             if (err) {
                                 funcionCallback(null);
                             } else {
-                                funcionCallback(canciones, count);
+                                funcionCallback(ofertas, count);
                             }
                             db.close();
                         });
@@ -64,7 +64,7 @@ module.exports = {
             if (err) {
                 funcionCallback(null);
             } else {
-                let collection = db.collection('canciones');
+                let collection = db.collection('ofertas');
                 collection.remove(criterio, function(err, result) {
                     if (err) {
                         funcionCallback(null);
@@ -127,13 +127,13 @@ module.exports = {
             }
         });
     },
-    insertarOferta : function(cancion, funcionCallback) {
+    insertarOferta : function(oferta, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
             if (err) {
                 funcionCallback(null);
             } else {
-                let collection = db.collection('canciones');
-                collection.insertOne(cancion, function(err, result) {
+                let collection = db.collection('ofertas');
+                collection.insertOne(oferta, function(err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
@@ -149,12 +149,12 @@ module.exports = {
             if (err) {
                 funcionCallback(null);
             } else {
-                let collection = db.collection('canciones');
-                collection.find(criterio).toArray(function(err, canciones) {
+                let collection = db.collection('ofertas');
+                collection.find(criterio).toArray(function(err, ofertas) {
                     if (err) {
                         funcionCallback(null);
                     } else {
-                        funcionCallback(canciones);
+                        funcionCallback(ofertas);
                     }
                     db.close();
                 });
@@ -200,7 +200,7 @@ module.exports = {
             if (err) {
                 funcionCallback(null);
             } else {
-                let collection = db.collection('canciones');
+                let collection = db.collection('ofertas');
                 collection.update(criterio, {$set: cancion}, function(err, result) {
                     if (err) {
                         funcionCallback(null);

@@ -1,76 +1,76 @@
 module.exports = function (app, gestorBD) {
 
-    app.get("/api/cancion", function (req, res) {
-        gestorBD.obtenerOfertas({}, function (canciones) {
-            if (canciones == null) {
+    app.get("/api/oferta", function (req, res) {
+        gestorBD.obtenerOfertas({}, function (ofertas) {
+            if (ofertas == null) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
                 res.status(200);
-                res.send(JSON.stringify(canciones));
+                res.send(JSON.stringify(ofertas));
             }
         });
     });
 
-    app.get("/api/cancion/:id", function (req, res) {
+    app.get("/api/oferta/:id", function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
 
-        gestorBD.obtenerOfertas(criterio, function (canciones) {
-            if (canciones == null) {
+        gestorBD.obtenerOfertas(criterio, function (oferta) {
+            if (oferta == null) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
                 res.status(200);
-                res.send(JSON.stringify(canciones[0]));
+                res.send(JSON.stringify(oferta[0]));
             }
         });
     });
 
-    app.delete("/api/cancion/:id", function (req, res) {
+    app.delete("/api/oferta/:id", function (req, res) {
 
         let usuario = res.usuario;
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
         let criterioCancion = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
-        gestorBD.obtenerOfertas(criterioCancion, function (cancion) {
-            if (cancion == null || cancion[0].autor !== usuario) {
+        gestorBD.obtenerOfertas(criterioCancion, function (oferta) {
+            if (oferta == null || oferta[0].autor !== usuario) {
                 res.status(403);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
-                gestorBD.eliminarOferta(criterio, function (canciones) {
-                    if (canciones == null) {
+                gestorBD.eliminarOferta(criterio, function (pfertas) {
+                    if (pfertas == null) {
                         res.status(500);
                         res.json({
                             error: "se ha producido un error al eliminar la canción"
                         })
                     } else {
                         res.status(200);
-                        res.send(JSON.stringify(canciones));
+                        res.send(JSON.stringify(pfertas));
                     }
                 });
             }
         });
     });
 
-    app.put("/api/cancion/:id", function (req, res) {
+    app.put("/api/oferta/:id", function (req, res) {
 
         let usuario = res.usuario;
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        let criterioCancion = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        let criterioOferta = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
-        let cancion = {}; // Solo los atributos a modificar
+        let oferta = {}; // Solo los atributos a modificar
 
         if (req.body.nombre != null) {
             if (req.body.nombre.length >= 3)
-                cancion.nombre = req.body.nombre;
+                oferta.nombre = req.body.nombre;
             else {
                 res.status(403);
                 res.json({
@@ -81,7 +81,7 @@ module.exports = function (app, gestorBD) {
 
         if (req.body.genero != null) {
             if (req.body.genero.length >= 3) {
-                cancion.genero = req.body.genero;
+                oferta.genero = req.body.genero;
             } else {
                 res.status(403);
                 res.json({
@@ -93,7 +93,7 @@ module.exports = function (app, gestorBD) {
 
         if (req.body.precio != null) {
             if (req.body.precio > 0) {
-                cancion.precio = req.body.precio;
+                oferta.precio = req.body.precio;
             } else {
                 res.status(403);
                 res.json({
@@ -102,23 +102,23 @@ module.exports = function (app, gestorBD) {
             }
         }
 
-        gestorBD.obtenerOfertas(criterioCancion, function (canciones) {
-            if (canciones == null || canciones[0].autor !== usuario) {
+        gestorBD.obtenerOfertas(criterioOferta, function (ofertas) {
+            if (ofertas == null || ofertas[0].autor !== usuario) {
                 res.status(403);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
-                gestorBD.modificarOferta(criterio, cancion, function (result) {
+                gestorBD.modificarOferta(criterio, oferta, function (result) {
                     if (result == null) {
                         res.status(500);
                         res.json({
-                            error: "se ha producido un error al modificar la canción"
+                            error: "se ha producido un error al modificar la oferta"
                         })
                     } else {
                         res.status(200);
                         res.json({
-                            mensaje: "canción modificada",
+                            mensaje: "oferta modificada",
                             _id: req.params.id
                         })
                     }
@@ -127,13 +127,13 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-    app.post("/api/cancion", function (req, res) {
+    app.post("/api/oferta", function (req, res) {
 
-        let cancion = {};
+        let oferta = {};
 
         if (req.body.nombre != null) {
             if (req.body.nombre.length >= 3)
-                cancion.nombre = req.body.nombre;
+                oferta.nombre = req.body.nombre;
             else {
                 res.status(403);
                 res.json({
@@ -144,7 +144,7 @@ module.exports = function (app, gestorBD) {
 
         if (req.body.genero != null) {
             if (req.body.genero.length >= 3) {
-                cancion.genero = req.body.genero;
+                oferta.genero = req.body.genero;
             } else {
                 res.status(403);
                 res.json({
@@ -156,7 +156,7 @@ module.exports = function (app, gestorBD) {
 
         if (req.body.precio != null) {
             if (req.body.precio > 0) {
-                cancion.precio = req.body.precio;
+                oferta.precio = req.body.precio;
             } else {
                 res.status(403);
                 res.json({
@@ -165,7 +165,7 @@ module.exports = function (app, gestorBD) {
             }
         }
 
-        gestorBD.insertarOferta(cancion, function (id) {
+        gestorBD.insertarOferta(oferta, function (id) {
             if (id == null) {
                 res.status(500);
                 res.json({

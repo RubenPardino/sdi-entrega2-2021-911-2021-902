@@ -28,8 +28,6 @@ app.use(expressSession({
 }));
 let crypto = require('crypto');
 
-let fileUpload = require('express-fileupload');
-app.use(fileUpload());
 let mongo = require('mongodb');
 let swig = require('swig');
 let bodyParser = require('body-parser');
@@ -69,7 +67,7 @@ routerUsuarioToken.use(function(req, res, next) {
     }
 });
 // Aplicar routerUsuarioToken
-app.use('/api/cancion', routerUsuarioToken);
+app.use('/api/oferta', routerUsuarioToken);
 
 let gestorBD = require("./modules/gestorBD.js");
 gestorBD.init(app,mongo);
@@ -86,10 +84,11 @@ routerUsuarioSession.use(function(req, res, next) {
         res.redirect("/identificarse");
     }
 });
+
 //Aplicar routerUsuarioSession
-app.use("/canciones/agregar",routerUsuarioSession);
+app.use("/ofertas/agregar",routerUsuarioSession);
 app.use("/publicaciones",routerUsuarioSession);
-app.use("/cancion/comprar",routerUsuarioSession);
+app.use("/oferta/comprar",routerUsuarioSession);
 app.use("/compras",routerUsuarioSession);
 
 
@@ -102,9 +101,9 @@ routerUsuarioAutor.use(function(req, res, next) {
 // Cuidado porque req.params no funciona
 // en el router si los params van en la URL.
     gestorBD.obtenerOfertas(
-        {_id: mongo.ObjectID(id) }, function (canciones) {
-            console.log(canciones[0]);
-            if(canciones[0].autor == req.session.usuario ){
+        {_id: mongo.ObjectID(id) }, function (ofertas) {
+            console.log(ofertas[0]);
+            if(ofertas[0].autor == req.session.usuario ){
                 next();
             } else {
                 res.redirect("/tienda");
@@ -112,37 +111,9 @@ routerUsuarioAutor.use(function(req, res, next) {
         })
 });
 //Aplicar routerUsuarioAutor
-app.use("/cancion/modificar",routerUsuarioAutor);
-app.use("/cancion/eliminar",routerUsuarioAutor);
+app.use("/oferta/modificar",routerUsuarioAutor);
+app.use("/oferta/eliminar",routerUsuarioAutor);
 
-//routerAudios
-let routerAudios = express.Router();
-routerAudios.use(function(req, res, next) {
-    console.log("routerAudios");
-    let path = require('path');
-    let idCancion = path.basename(req.originalUrl, '.mp3');
-    gestorBD.obtenerOfertas(
-        {"_id": mongo.ObjectID(idCancion) }, function (canciones) {
-            if(req.session.usuario && canciones[0].autor == req.session.usuario ){
-                next();
-            } else {
-                let criterio = {
-                    usuario : req.session.usuario,
-                    cancionId : mongo.ObjectID(idCancion)
-                };
-
-                gestorBD.obtenerCompras(criterio ,function(compras){
-                    if (compras != null && compras.length > 0 ){
-                        next();
-                    } else {
-                        res.redirect("/tienda");
-                    }
-                });
-            }
-        })
-});
-//Aplicar routerAudios
-app.use("/audios/",routerAudios);
 
 app.use(express.static('public'));
 

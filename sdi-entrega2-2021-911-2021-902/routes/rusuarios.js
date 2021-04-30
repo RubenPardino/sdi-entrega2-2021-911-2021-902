@@ -1,7 +1,4 @@
 module.exports = function (app, swig, gestorBD) {
-    app.get("/usuarios", function (req, res) {
-        res.send("ver usuarios");
-    });
 
     app.get("/registrarse", function (req, res) {
         let respuesta = swig.renderFile('views/bregistro.html', {});
@@ -50,6 +47,27 @@ module.exports = function (app, swig, gestorBD) {
             }
         });
     });
+
+    app.get("/usuarios", function (req, res) {
+
+        let criterio = {}
+
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            if (usuarios == null || usuarios.length == 0) {
+                req.session.usuario = null;
+                res.redirect("/error" +
+                    "?mensaje=Error al obtener usuarios" +
+                    "&tipoMensaje=alert-danger ");
+            } else {
+                let respuesta = swig.renderFile('views/usuarios.html', {
+                    usuarios: usuarios
+                });
+
+                res.send(respuesta);
+            }
+        });
+    });
+
 
     app.post("/identificarse", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))

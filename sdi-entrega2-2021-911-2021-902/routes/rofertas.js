@@ -130,7 +130,7 @@ module.exports = function (app, swig, gestorBD) {
                 }
                 let respuesta = swig.renderFile('views/btienda.html',
                     {
-                        ofertas: ofertas,
+                        ofertas: ofertas.filter(n => n.autor !== req.session.usuario),
                         paginas: paginas,
                         actual: pg
                     });
@@ -265,11 +265,13 @@ module.exports = function (app, swig, gestorBD) {
     app.post('/oferta/modificar/:id', function (req, res) {
         let id = req.params.id;
         let criterio = {"_id": gestorBD.mongo.ObjectID(id)};
+
         let oferta = {
             titulo: req.body.titulo,
             detalles: req.body.detalles,
             precio: req.body.precio
         }
+
         gestorBD.modificarOferta(criterio, oferta, function (result) {
             if (result == null) {
                 res.send("Error al modificar ");

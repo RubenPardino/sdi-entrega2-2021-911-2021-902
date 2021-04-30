@@ -245,11 +245,13 @@ module.exports = function (app, swig, gestorBD) {
 
     app.post("/oferta", function (req, res) {
 
+        var datetime = new Date();
+
         let oferta = {
             titulo: req.body.titulo,
             precio: req.body.precio,
             detalles: req.body.detalles,
-            fecha: Date.now(),
+            fecha: datetime.toISOString().slice(0,10),
             autor: req.session.usuario
         }
         // Conectarse

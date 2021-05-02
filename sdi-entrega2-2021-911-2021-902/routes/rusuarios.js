@@ -68,6 +68,16 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    app.get('/usuario/eliminar/:id', function (req, res) {
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        gestorBD.eliminarUsuario(criterio, function (usuario) {
+            if (usuario == null) {
+                res.send(respuesta);
+            } else {
+                res.redirect("/usuarios");
+            }
+        });
+    })
 
     app.post("/identificarse", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))

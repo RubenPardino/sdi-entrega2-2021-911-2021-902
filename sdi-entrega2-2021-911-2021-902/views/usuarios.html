@@ -14,7 +14,7 @@
             <div class="wrap">Nombre: {{ usuario.nombre }}</div>
             <div class="wrap">Apellidos: {{ usuario.apellidos }}</div>
             <div class="wrap">Email: {{ usuario.email }}</div>
-
+            <a href="/usuario/eliminar/{{ usuario._id.toString() }}">Eliminar</a>
         </div>
     </div>
     {% endfor %}

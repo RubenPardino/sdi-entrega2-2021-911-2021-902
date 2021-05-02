@@ -44,7 +44,7 @@ module.exports = function (app, swig, gestorBD) {
                                 }
                             });
                         } else {
-                            res.send("Ya has comprado la canción");
+                            res.send("Ya has comprado la oferta");
                         }
                     }
                 }

@@ -111,28 +111,48 @@ public class SdiEntrega2Tests {
 		assertTrue(elementos.get(0)!=null);				
 	}
 	
-	//PR05. Sin hacer /
+	//PR05. Inicio de sesión con datos válidos /
 	@Test
 	public void PR05() {
-		assertTrue("PR05 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "testPrimerRegistro@gmail.com", "123456");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Precio");
+		assertTrue(elementos.get(0)!=null);			
 	}
 	
-	//PR06. Sin hacer /
+	//PR06. Inicio de sesión con contraseña incorrecta /
 	@Test
 	public void PR06() {
-		assertTrue("PR06 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "testPrimerRegistro@gmail.com", "654321");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email o password incorrecto");
+		assertTrue(elementos.get(0)!=null);			
 	}
 	
-	//PR07. Sin hacer /
+	//PR07. Inicio de sesión con campos vacíos /
 	@Test
 	public void PR07() {
-		assertTrue("PR07 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "", "");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email:");
+		assertTrue(elementos.get(0)!=null);				
 	}	
 	
 	//PR08. Sin hacer /
 	@Test
 	public void PR08() {
-		assertTrue("PR08 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "testNoExistente@gmail.com", "123456");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email o password incorrecto");
+		assertTrue(elementos.get(0)!=null);			
 	}	
 	
 	//PR09. Sin hacer /

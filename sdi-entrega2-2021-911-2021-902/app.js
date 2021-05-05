@@ -95,7 +95,7 @@ app.use("/compras", routerUsuarioSession);
 var routerAdministrador = express.Router();
 routerAdministrador.use(function (req, res, next) {
     console.log("routerAdministrador");
-    if (req.session.usuario === "admin@email.com") {
+    if (req.session.rol === 0) {
         // dejamos correr la petición
         next();
     } else {

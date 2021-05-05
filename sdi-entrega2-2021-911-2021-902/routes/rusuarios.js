@@ -1,5 +1,11 @@
 module.exports = function (app, swig, gestorBD) {
 
+    var rolEnum = {
+        ADMIN: 0,
+        ESTANDAR: 1,
+        ANONIMO: 2
+    }
+
     app.get("/registrarse", function (req, res) {
         let respuesta = swig.renderFile('views/bregistro.html', {});
         res.send(respuesta);
@@ -13,6 +19,7 @@ module.exports = function (app, swig, gestorBD) {
     app.get('/desconectarse', function (req, res) {
         req.session.usuario = null;
         req.session.saldo = null;
+        req.session.rol = rolEnum.ANONIMO;
         res.redirect("/identificarse");
     });
 
@@ -29,6 +36,7 @@ module.exports = function (app, swig, gestorBD) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
                 req.session.saldo = null;
+                req.session.rol = rolEnum.ANONIMO;
                 res.redirect("/error" +
                     "?mensaje=Error al obtener usuarios" +
                     "&tipoMensaje=alert-danger ");
@@ -67,7 +75,8 @@ module.exports = function (app, swig, gestorBD) {
             password: seguro,
             nombre: req.body.nombre,
             apellidos: req.body.apellidos,
-            saldo: 100
+            saldo: 100,
+            rol: rolEnum.ESTANDAR
         }
         let criterio = {
             email: req.body.email,
@@ -84,12 +93,14 @@ module.exports = function (app, swig, gestorBD) {
                     if (usuarios == null || usuarios.length == 0) {
                         req.session.usuario = null;
                         req.session.saldo = null;
+                        req.session.rol = rolEnum.ANONIMO;
                         res.redirect("/error" +
                             "?mensaje=Email o password incorrecto" +
                             "&tipoMensaje=alert-danger ");
                     } else {
                         req.session.usuario = usuarios[0].email;
                         req.session.saldo = usuarios[0].saldo;
+                        req.session.rol = usuarios[0].rol;
                         res.redirect("/publicaciones");
                     }
                 });
@@ -108,12 +119,14 @@ module.exports = function (app, swig, gestorBD) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
                 req.session.saldo = null;
+                req.session.rol = rolEnum.ANONIMO;
                 res.redirect("/error" +
                     "?mensaje=Email o password incorrecto" +
                     "&tipoMensaje=alert-danger ");
             } else {
                 req.session.usuario = usuarios[0].email;
                 req.session.saldo = usuarios[0].saldo;
+                req.session.rol = usuarios[0].rol;
                 res.redirect("/publicaciones");
             }
         });

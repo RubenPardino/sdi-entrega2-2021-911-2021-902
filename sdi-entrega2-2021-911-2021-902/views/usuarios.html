@@ -18,16 +18,16 @@
             </thead>
             <tbody>
             {% for usuario in param %}
-            {% if usuario.rol !==0 %}
-            <tr>
-                <td>{{ usuario.nombre }}</td>
-                <td>{{ usuario.apellidos }}</td>
-                <td>{{ usuario.email }}</td>
-                <td>
-                    <input type="checkbox" onchange="manageList()"/>
-                </td>
-            </tr>
-            {% endif %}
+                {% if usuario.rol !==0 %}
+                    <tr>
+                        <td>{{ usuario.nombre }}</td>
+                        <td>{{ usuario.apellidos }}</td>
+                        <td>{{ usuario.email }}</td>
+                        <td>
+                            <input type="checkbox" onchange="manageList('{{ usuario._id.toString() }}')"/>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>
@@ -41,14 +41,11 @@
     var eliminados = [];
 
     function manageList(user) {
-        console.log(eliminados);
         if (eliminados.includes(user)) {
-            console.log("insertando");
             var i = eliminados.indexOf(user);
             eliminados.splice(i,1);
         }
         else {
-            console.log("eliminando");
             eliminados.push(user);
         }
     }
@@ -57,6 +54,8 @@
         for (let user of eliminados) {
             $.get("/usuario/eliminar/"+user);
         }
+        eliminados.splice(0, eliminados.length)
+        location.reload();
     }
 
 </script>

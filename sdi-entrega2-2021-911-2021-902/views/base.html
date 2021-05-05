@@ -35,7 +35,7 @@
           <li id="mUsuarios"><a href="/usuarios">Ver usuarios</a></li>
         {% endif %}
 
-        {% if session.usuario !== null && session.saldo !== null%}
+        {% if session.usuario !== null && session.saldo !== null && session.rol !== 0%}
           <li id="mEmailMoney"><a>{{session.usuario}} - {{session.saldo}}€</a></li>
         {% endif %}
       </ul>

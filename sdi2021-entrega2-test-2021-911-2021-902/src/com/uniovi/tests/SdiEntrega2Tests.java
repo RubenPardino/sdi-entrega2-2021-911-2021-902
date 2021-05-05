@@ -63,28 +63,52 @@ public class SdiEntrega2Tests {
 		driver.quit();
 	}
 
-	//PR01. Sin hacer /
+	//PR01. Registrarse con datos válidos /
 	@Test
 	public void PR01() {
-		assertTrue("PR01 sin hacer", false);			
+		// Vamos al formulario de registro
+		PO_HomeView.clickOption(driver, "registrarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_RegisterView.fillForm(driver, "testPrimerRegistro@gmail.com", "Jonathan", "Barbon", "123456", "123456");
+		// Comprobamos que entramos en la sección privada
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Precio");
+		assertTrue(elementos.get(0)!=null);
 	}
 
-	//PR02. Sin hacer /
+	//PR02. Registrarse con datos inválidos /
 	@Test
 	public void PR02() {
-		assertTrue("PR02 sin hacer", false);			
+		// Vamos al formulario de registro
+		PO_HomeView.clickOption(driver, "registrarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_RegisterView.fillForm(driver, "", "", "", "123456", "123456");
+		// Comprobamos que NO entramos en la sección privada
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email:");
+		assertTrue(elementos.get(0)!=null);	
 	}
 
-	//PR03. Sin hacer /
+	//PR03. Registrarse con repetición de contraseña inválida /
 	@Test
 	public void PR03() {
-		assertTrue("PR03 sin hacer", false);			
+		// Vamos al formulario de registro
+		PO_HomeView.clickOption(driver, "registrarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_RegisterView.fillForm(driver, "test2@gmail.com", "Jonathan", "Barbon", "123456", "654321");
+		// Comprobamos que NO entramos en la sección privada
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Las contraseñas no coinciden");
+		assertTrue(elementos.get(0)!=null);			
 	}
 	
-	//PR04. Sin hacer /
+	//PR04. Registrarse con usuario ya existente /
 	@Test
 	public void PR04() {
-		assertTrue("PR04 sin hacer", false);			
+		// Vamos al formulario de registro
+		PO_HomeView.clickOption(driver, "registrarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_RegisterView.fillForm(driver, "test1@gmail.com", "Jonathan", "Barbon", "123456", "123456");
+		// Comprobamos que NO entramos en la sección privada
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Usuario ya registrado anteriormente");
+		assertTrue(elementos.get(0)!=null);				
 	}
 	
 	//PR05. Sin hacer /

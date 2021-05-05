@@ -91,6 +91,21 @@ app.use("/publicaciones", routerUsuarioSession);
 app.use("/oferta/comprar", routerUsuarioSession);
 app.use("/compras", routerUsuarioSession);
 
+//routerAdministrador
+var routerAdministrador = express.Router();
+routerAdministrador.use(function (req, res, next) {
+    console.log("routerAdministrador");
+    if (req.session.usuario === "admin@email.com") {
+        // dejamos correr la petición
+        next();
+    } else {
+        console.log("va a : " + req.session.destino)
+        res.redirect("/error"+
+            "?mensaje=Esta opción es solo para el administrador" +
+            "&tipoMensaje=alert-danger ");
+    }
+});
+app.use("/usuarios", routerAdministrador);
 
 //routerUsuarioAutor
 let routerUsuarioAutor = express.Router();

@@ -1,16 +1,16 @@
 module.exports = function (app, swig, gestorBD) {
 
     app.get('/ofertas/agregar', function (req, res) {
-
-        let respuesta = swig.renderFile('views/bagregar.html', {});
-        res.send(respuesta);
+        res.send(app.get('returnVista')(req, 'bagregar.html', null));
     })
 
     app.get('/oferta/eliminar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.eliminarOferta(criterio, function (ofertas) {
             if (ofertas == null) {
-                res.send(respuesta);
+                res.redirect("/error" +
+                    "?mensaje=No existe la oferta" +
+                    "&tipoMensaje=alert-danger ");
             } else {
                 res.redirect("/publicaciones");
             }
@@ -66,11 +66,7 @@ module.exports = function (app, swig, gestorBD) {
 
                 let criterio = {"_id": {$in: ofertasCompradasIds}};
                 gestorBD.obtenerOfertas(criterio, function (ofertas) {
-                    let respuesta = swig.renderFile('views/bcompras.html',
-                        {
-                            ofertas: ofertas
-                        });
-                    res.send(respuesta);
+                    res.send(app.get('returnVista')(req, 'bcompras.html', ofertas));
                 })
             }
         })
@@ -83,11 +79,7 @@ module.exports = function (app, swig, gestorBD) {
             if (ofertas == null) {
                 res.send(respuesta);
             } else {
-                let respuesta = swig.renderFile('views/bofertaModificar.html',
-                    {
-                        oferta: ofertas[0]
-                    });
-                res.send(respuesta);
+                res.send(app.get('returnVista')(req, 'bofertaModificar.html', ofertas[0]));
             }
         });
     });
@@ -128,13 +120,11 @@ module.exports = function (app, swig, gestorBD) {
                         paginas.push(i);
                     }
                 }
-                let respuesta = swig.renderFile('views/btienda.html',
-                    {
-                        ofertas: ofertas.filter(n => n.autor !== req.session.usuario),
-                        paginas: paginas,
-                        actual: pg
-                    });
-                res.send(respuesta);
+                res.send(app.get('returnVista')(req, 'btienda.html', {
+                    ofertas: ofertas.filter(n => n.autor !== req.session.usuario),
+                    paginas: paginas,
+                    actual: pg
+                }));
             }
         });
     });
@@ -146,11 +136,7 @@ module.exports = function (app, swig, gestorBD) {
             if (ofertas == null) {
                 res.send("Error al listar ");
             } else {
-                let respuesta = swig.renderFile('views/bpublicaciones.html',
-                    {
-                        ofertas: ofertas
-                    });
-                res.send(respuesta);
+                res.send(app.get('returnVista')(req, 'bpublicaciones.html', ofertas));
             }
         });
     });
@@ -181,12 +167,10 @@ module.exports = function (app, swig, gestorBD) {
                                 let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                 // nuevo campo "usd"
                                 ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                let respuesta = swig.renderFile('views/boferta.html',
-                                    {
-                                        oferta: ofertas[0],
-                                        comentarios: comentarios,
-                                    });
-                                res.send(respuesta);
+                                res.send(app.get('returnVista')(req, 'boferta.html', {
+                                    oferta: ofertas[0],
+                                    comentarios: comentarios,
+                                }));
                             })
                         } else {
                             if (compras.length == 0) {
@@ -204,12 +188,10 @@ module.exports = function (app, swig, gestorBD) {
                                     let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                     // nuevo campo "usd"
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    let respuesta = swig.renderFile('views/boferta.html',
-                                        {
-                                            oferta: ofertas[0],
-                                            comentarios: comentarios,
-                                        });
-                                    res.send(respuesta);
+                                    res.send(app.get('returnVista')(req, 'boferta.html', {
+                                        oferta: ofertas[0],
+                                        comentarios: comentarios,
+                                    }));
                                 })
                             } else {
                                 let configuracion = {
@@ -226,12 +208,10 @@ module.exports = function (app, swig, gestorBD) {
                                     let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
                                     // nuevo campo "usd"
                                     ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    let respuesta = swig.renderFile('views/boferta.html',
-                                        {
-                                            oferta: ofertas[0],
-                                            comentarios: comentarios,
-                                        });
-                                    res.send(respuesta);
+                                    res.send(app.get('returnVista')(req, 'boferta.html', {
+                                        oferta: ofertas[0],
+                                        comentarios: comentarios,
+                                    }));
                                 })
 
                             }

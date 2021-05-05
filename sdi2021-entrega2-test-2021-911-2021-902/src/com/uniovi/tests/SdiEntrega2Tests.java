@@ -21,11 +21,15 @@ public class SdiEntrega2Tests {
 	//static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
 	//static String Geckdriver024 = "C:\\Path\\geckodriver024win64.exe";
 	//En MACOSX (Debe ser la versión 65.0.1 y desactivar las actualizacioens automáticas):
-	static String PathFirefox65 = "/Applications/Firefox 2.app/Contents/MacOS/firefox-bin";
+	//static String PathFirefox65 = "/Applications/Firefox 2.app/Contents/MacOS/firefox-bin";
 	//static String PathFirefox64 = "/Applications/Firefox.app/Contents/MacOS/firefox-bin";
-	static String Geckdriver024 = "/Users/delacal/Documents/SDI1718/firefox/geckodriver024mac";
+	//static String Geckdriver024 = "/Users/delacal/Documents/SDI1718/firefox/geckodriver024mac";
 	//static String Geckdriver022 = "/Users/delacal/Documents/SDI1718/firefox/geckodriver023mac";
 	//Común a Windows y a MACOSX
+	
+	
+	static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
+	static String Geckdriver024 = "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 	static WebDriver driver = getDriver(PathFirefox65, Geckdriver024); 
 	static String URL = "https://localhost:8081";
 

@@ -6,19 +6,59 @@
 
 <h2>Usuarios</h2>
 <div class="row">
-    <!-- http://librosweb.es/libro/bootstrap_3/capitulo_2/tipos_de_rejillas.html -->
-    <!-- Inicio del Bloque autor -->
-    {% for usuario in param %}
-    <div class="col-xs-6 col-sm-6 col-md-4 col-lg-3">
-        <div style="width: 200px">
-            <div class="wrap">Nombre: {{ usuario.nombre }}</div>
-            <div class="wrap">Apellidos: {{ usuario.apellidos }}</div>
-            <div class="wrap">Email: {{ usuario.email }}</div>
-            <a href="/usuario/eliminar/{{ usuario._id.toString() }}">Eliminar</a>
-        </div>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Apellidos</th>
+                <th>Email</th>
+                <th class="col-md-1"></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for usuario in param %}
+            {% if usuario.rol !==0 %}
+            <tr>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.apellidos }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                    <input type="checkbox" onchange="manageList()"/>
+                </td>
+            </tr>
+            {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
-    {% endfor %}
-    <!-- Fin del Bloque autor -->
 </div>
+
+<button onclick="removeChecked()">Eliminar</button>
+
+<script>
+
+    var eliminados = [];
+
+    function manageList(user) {
+        console.log(eliminados);
+        if (eliminados.includes(user)) {
+            console.log("insertando");
+            var i = eliminados.indexOf(user);
+            eliminados.splice(i,1);
+        }
+        else {
+            console.log("eliminando");
+            eliminados.push(user);
+        }
+    }
+
+    function removeChecked() {
+        for (let user of eliminados) {
+            $.get("/usuario/eliminar/"+user);
+        }
+    }
+
+</script>
 
 {% endblock %}

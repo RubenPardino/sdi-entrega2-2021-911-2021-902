@@ -132,7 +132,10 @@ module.exports = function (app, swig, gestorBD) {
                 req.session.usuario = usuarios[0].email;
                 req.session.saldo = usuarios[0].saldo;
                 req.session.rol = usuarios[0].rol;
-                res.redirect("/publicaciones");
+                if (usuarios[0].email === "admin@email.com")
+                    res.redirect("/usuarios")
+                else
+                    res.redirect("/publicaciones");
             }
         });
     });

@@ -39,7 +39,7 @@ module.exports = function(app, swig, gestorBD) {
             if (id == null) {
                 res.send("Error al insertar comentario");
             } else {
-                res.send("Comentario insertado");
+                res.redirect("/oferta/"+req.params.cancion_id);
             }
         })
     });

@@ -25,10 +25,16 @@
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <ul class="nav navbar-nav">
-        <li id="mTienda" class="active"><a href="/tienda">Tienda</a></li>
-		<li id="mPublicaciones"><a href="/publicaciones">Publicaciones</a></li>
-        <li id="mCompras"><a href="/compras">Compras</a></li>
-        <li id="mUsuarios"><a href="/usuarios">Ver usuarios</a></li>
+        {% if session.rol !== 0 %}
+          <li id="mTienda" class="active"><a href="/tienda">Tienda</a></li>
+          <li id="mPublicaciones"><a href="/publicaciones">Publicaciones</a></li>
+          <li id="mCompras"><a href="/compras">Compras</a></li>
+        {% endif %}
+
+        {% if session.rol === 0 %}
+          <li id="mUsuarios"><a href="/usuarios">Ver usuarios</a></li>
+        {% endif %}
+
         {% if session.usuario !== null && session.saldo !== null%}
           <li id="mEmailMoney"><a>{{session.usuario}} - {{session.saldo}}€</a></li>
         {% endif %}

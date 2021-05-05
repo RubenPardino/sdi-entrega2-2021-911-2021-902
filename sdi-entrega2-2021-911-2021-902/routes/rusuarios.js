@@ -1,5 +1,11 @@
 module.exports = function (app, swig, gestorBD) {
 
+    var rolEnum = {
+        ADMIN: 0,
+        ESTANDAR: 1,
+        ANONIMO: 2
+    }
+
     app.get("/registrarse", function (req, res) {
         let respuesta = swig.renderFile('views/bregistro.html', {});
         res.send(respuesta);
@@ -12,40 +18,14 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/desconectarse', function (req, res) {
         req.session.usuario = null;
-        res.send("Usuario desconectado");
+        req.session.saldo = null;
+        req.session.rol = rolEnum.ANONIMO;
+        res.redirect("/identificarse");
     });
 
     app.get('/error', function (req, res) {
         let respuesta = swig.renderFile('views/error.html', {})
         res.send(respuesta);
-    });
-
-    app.post('/usuario', function (req, res) {
-        if (req.body.password !== req.body.password2)
-            res.redirect("/error" +
-                "?mensaje=Las contraseñas no coinciden" +
-                "&tipoMensaje=alert-danger ");
-
-        let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
-            .update(req.body.password).digest('hex');
-
-        let usuario = {
-            email: req.body.email,
-            password: seguro,
-            nombre: req.body.nombre,
-            apellidos: req.body.apellidos,
-            saldo: 100
-        }
-
-        gestorBD.insertarUsuario(usuario, function (id) {
-            if (id == null) {
-                res.redirect("/error" +
-                    "?mensaje=Error al registrar usuario" +
-                    "&tipoMensaje=alert-danger ");
-            } else {
-                res.redirect("/identificarse?mensaje=Nuevo usuario registrado");
-            }
-        });
     });
 
     app.get("/usuarios", function (req, res) {
@@ -55,6 +35,8 @@ module.exports = function (app, swig, gestorBD) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
+                req.session.saldo = null;
+                req.session.rol = rolEnum.ANONIMO;
                 res.redirect("/error" +
                     "?mensaje=Error al obtener usuarios" +
                     "&tipoMensaje=alert-danger ");
@@ -79,6 +61,53 @@ module.exports = function (app, swig, gestorBD) {
         });
     })
 
+    app.post('/usuario', function (req, res) {
+        if (req.body.password !== req.body.password2)
+            res.redirect("/error" +
+                "?mensaje=Las contraseñas no coinciden" +
+                "&tipoMensaje=alert-danger ");
+
+        let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
+            .update(req.body.password).digest('hex');
+
+        let usuario = {
+            email: req.body.email,
+            password: seguro,
+            nombre: req.body.nombre,
+            apellidos: req.body.apellidos,
+            saldo: 100,
+            rol: rolEnum.ESTANDAR
+        }
+        let criterio = {
+            email: req.body.email,
+            password: seguro
+        }
+
+        gestorBD.insertarUsuario(usuario, function (id) {
+            if (id == null) {
+                res.redirect("/error" +
+                    "?mensaje=Error al registrar usuario" +
+                    "&tipoMensaje=alert-danger ");
+            } else {
+                gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+                    if (usuarios == null || usuarios.length == 0) {
+                        req.session.usuario = null;
+                        req.session.saldo = null;
+                        req.session.rol = rolEnum.ANONIMO;
+                        res.redirect("/error" +
+                            "?mensaje=Email o password incorrecto" +
+                            "&tipoMensaje=alert-danger ");
+                    } else {
+                        req.session.usuario = usuarios[0].email;
+                        req.session.saldo = usuarios[0].saldo;
+                        req.session.rol = usuarios[0].rol;
+                        res.redirect("/publicaciones");
+                    }
+                });
+            }
+        });
+    });
+
     app.post("/identificarse", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');
@@ -89,11 +118,15 @@ module.exports = function (app, swig, gestorBD) {
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
             if (usuarios == null || usuarios.length == 0) {
                 req.session.usuario = null;
+                req.session.saldo = null;
+                req.session.rol = rolEnum.ANONIMO;
                 res.redirect("/error" +
                     "?mensaje=Email o password incorrecto" +
                     "&tipoMensaje=alert-danger ");
             } else {
                 req.session.usuario = usuarios[0].email;
+                req.session.saldo = usuarios[0].saldo;
+                req.session.rol = usuarios[0].rol;
                 res.redirect("/publicaciones");
             }
         });

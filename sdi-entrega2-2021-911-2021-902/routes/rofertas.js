@@ -32,10 +32,10 @@ module.exports = function (app, swig, gestorBD) {
                 if (ofertas == null) {
                     res.send("Error al recuperar la oferta.");
                 } else {
-                    if (req.session.usuario == ofertas[0].autor) {
+                    if (req.session.usuario === ofertas[0].autor) {
                         res.send("La oferta es suya");
                     } else {
-                        if (compras.length == 0) {
+                        if (compras.length === 0) {
                             gestorBD.insertarCompra(compra, function (idCompra) {
                                 if (idCompra == null) {
                                     res.send(respuesta);
@@ -166,7 +166,7 @@ module.exports = function (app, swig, gestorBD) {
                     if (ofertas == null) {
                         res.send("Error al recuperar la canción.");
                     } else {
-                        if (req.session.usuario == ofertas[0].autor) {
+                        if (req.session.usuario === ofertas[0].autor) {
                             let configuracion = {
                                 url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
                                 method: "get",

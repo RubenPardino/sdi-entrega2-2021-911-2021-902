@@ -155,21 +155,32 @@ public class SdiEntrega2Tests {
 		assertTrue(elementos.get(0)!=null);			
 	}	
 	
-	//PR09. Sin hacer /
+	//PR09. Salir de sesión y comprobar que estás en el login /
 	@Test
 	public void PR09() {
-		assertTrue("PR09 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");
+		PO_HomeView.clickOption(driver, "desconectarse", "class", "btn btn-primary");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email:");
+		assertTrue(elementos.get(0)!=null);				
 	}	
-	//PR10. Sin hacer /
+	//PR10. Comprobar que no está el botón de desconectar / FALLA
 	@Test
 	public void PR10() {
-		assertTrue("PR10 sin hacer", false);			
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "desconectarse");
+		assertTrue(elementos.get(0)==null);			
 	}	
 	
-	//PR11. Sin hacer /
+	//PR11. Mostrar el listado de usuarios al iniciar con la vista de administrador /
 	@Test
 	public void PR11() {
-		assertTrue("PR11 sin hacer", false);			
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
+		PO_View.checkElement(driver, "text", "prueba1@prueba1.com");
+		PO_View.checkElement(driver, "text", "prueba10@test.com");
 	}	
 	
 	//PR12. Sin hacer /

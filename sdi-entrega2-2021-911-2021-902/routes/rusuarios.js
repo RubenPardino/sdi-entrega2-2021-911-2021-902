@@ -7,13 +7,11 @@ module.exports = function (app, swig, gestorBD) {
     }
 
     app.get("/registrarse", function (req, res) {
-        let respuesta = swig.renderFile('views/bregistro.html', {});
-        res.send(respuesta);
+        res.send(app.get('returnVista')(req, 'bregistro.html', null));
     });
 
     app.get("/identificarse", function (req, res) {
-        let respuesta = swig.renderFile('views/bidentificacion.html', {});
-        res.send(respuesta);
+        res.send(app.get('returnVista')(req, 'bidentificacion.html', null));
     });
 
     app.get('/desconectarse', function (req, res) {
@@ -24,8 +22,7 @@ module.exports = function (app, swig, gestorBD) {
     });
 
     app.get('/error', function (req, res) {
-        let respuesta = swig.renderFile('views/error.html', {})
-        res.send(respuesta);
+        res.send(app.get('returnVista')(req, 'error.html', null));
     });
 
     app.get("/usuarios", function (req, res) {
@@ -33,7 +30,7 @@ module.exports = function (app, swig, gestorBD) {
         let criterio = {}
 
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-            if (usuarios == null || usuarios.length == 0) {
+            if (usuarios == null || usuarios.length === 0) {
                 req.session.usuario = null;
                 req.session.saldo = null;
                 req.session.rol = rolEnum.ANONIMO;
@@ -41,11 +38,7 @@ module.exports = function (app, swig, gestorBD) {
                     "?mensaje=Error al obtener usuarios" +
                     "&tipoMensaje=alert-danger ");
             } else {
-                let respuesta = swig.renderFile('views/usuarios.html', {
-                    usuarios: usuarios
-                });
-
-                res.send(respuesta);
+                res.send(app.get('returnVista')(req, 'usuarios.html', usuarios));
             }
         });
     });
@@ -54,7 +47,9 @@ module.exports = function (app, swig, gestorBD) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.eliminarUsuario(criterio, function (usuario) {
             if (usuario == null) {
-                res.send(respuesta);
+                res.redirect("/error" +
+                    "?mensaje=No existe un usuario con esa id" +
+                    "&tipoMensaje=alert-danger ");
             } else {
                 res.redirect("/usuarios");
             }
@@ -66,46 +61,56 @@ module.exports = function (app, swig, gestorBD) {
             res.redirect("/error" +
                 "?mensaje=Las contraseñas no coinciden" +
                 "&tipoMensaje=alert-danger ");
+        else {
 
-        let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
-            .update(req.body.password).digest('hex');
+            let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
+                .update(req.body.password).digest('hex');
 
-        let usuario = {
-            email: req.body.email,
-            password: seguro,
-            nombre: req.body.nombre,
-            apellidos: req.body.apellidos,
-            saldo: 100,
-            rol: rolEnum.ESTANDAR
-        }
-        let criterio = {
-            email: req.body.email,
-            password: seguro
-        }
-
-        gestorBD.insertarUsuario(usuario, function (id) {
-            if (id == null) {
-                res.redirect("/error" +
-                    "?mensaje=Error al registrar usuario" +
-                    "&tipoMensaje=alert-danger ");
-            } else {
-                gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-                    if (usuarios == null || usuarios.length == 0) {
-                        req.session.usuario = null;
-                        req.session.saldo = null;
-                        req.session.rol = rolEnum.ANONIMO;
-                        res.redirect("/error" +
-                            "?mensaje=Email o password incorrecto" +
-                            "&tipoMensaje=alert-danger ");
-                    } else {
-                        req.session.usuario = usuarios[0].email;
-                        req.session.saldo = usuarios[0].saldo;
-                        req.session.rol = usuarios[0].rol;
-                        res.redirect("/publicaciones");
-                    }
-                });
+            let usuario = {
+                email: req.body.email,
+                password: seguro,
+                nombre: req.body.nombre,
+                apellidos: req.body.apellidos,
+                saldo: 100,
+                rol: rolEnum.ESTANDAR
             }
-        });
+            let criterio = {
+                email: req.body.email,
+                password: seguro
+            }
+            gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+                if (usuarios == null || usuarios.length == 0) {
+                    gestorBD.insertarUsuario(usuario, function (id) {
+                        if (id == null) {
+                            res.redirect("/error" +
+                                "?mensaje=Error al registrar usuario" +
+                                "&tipoMensaje=alert-danger ");
+                        } else {
+                            gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+                                if (usuarios == null || usuarios.length == 0) {
+                                    req.session.usuario = null;
+                                    req.session.saldo = null;
+                                    req.session.rol = rolEnum.ANONIMO;
+                                    res.redirect("/error" +
+                                        "?mensaje=Email o password incorrecto" +
+                                        "&tipoMensaje=alert-danger ");
+                                } else {
+                                    req.session.usuario = usuarios[0].email;
+                                    req.session.saldo = usuarios[0].saldo;
+                                    req.session.rol = usuarios[0].rol;
+                                    res.redirect("/publicaciones");
+                                }
+                            });
+                        }
+                    });
+                }
+                else {
+                    res.redirect("/error" +
+                        "?mensaje=Usuario ya registrado anteriormente" +
+                        "&tipoMensaje=alert-danger ");
+                }
+            })
+        }
     });
 
     app.post("/identificarse", function (req, res) {
@@ -116,7 +121,7 @@ module.exports = function (app, swig, gestorBD) {
             password: seguro
         }
         gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-            if (usuarios == null || usuarios.length == 0) {
+            if (usuarios == null || usuarios.length === 0) {
                 req.session.usuario = null;
                 req.session.saldo = null;
                 req.session.rol = rolEnum.ANONIMO;
@@ -127,7 +132,10 @@ module.exports = function (app, swig, gestorBD) {
                 req.session.usuario = usuarios[0].email;
                 req.session.saldo = usuarios[0].saldo;
                 req.session.rol = usuarios[0].rol;
-                res.redirect("/publicaciones");
+                if (usuarios[0].email === "admin@email.com")
+                    res.redirect("/usuarios")
+                else
+                    res.redirect("/publicaciones");
             }
         });
     });

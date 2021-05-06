@@ -6,9 +6,9 @@
 <div class="row">
     <div class="media col-xs-10">
         <div class="media-body">
-            <h2>{{ oferta.titulo }}</h2>
-            <p>{{ oferta.detalles }}</p>
-            <p>{{ oferta.precio }} €</p>
+            <h2>{{ param.oferta.titulo }}</h2>
+            <p>{{ param.oferta.detalles }}</p>
+            <p>{{ param.oferta.precio }} €</p>
             {% if audio %}
             <a class="btn btn-primary pull-right">Comprada</a>
             {% else %}
@@ -23,7 +23,7 @@
 
 
 <h2>Añadir comentario</h2>
-<form class="form-horizontal" method="post" action="/comentarios/{{ oferta._id.toString() }}">
+<form class="form-horizontal" method="post" action="/comentarios/{{ param.oferta._id.toString() }}">
     <div class="form-group">
         <label class="control-label col-sm-2" for="texto">Texto:</label>
         <div class="col-sm-10">
@@ -41,10 +41,10 @@
 </form>
 
 <h3>Comentarios:</h3>
-{% for comentario in comentarios %}
+{% for comentario in param.comentarios %}
 <h4>{{ comentario.autor }}</h4>
 <p>{{ comentario.texto }}</p>
-<a href="/oferta/borrar/{{ oferta._id.toString() }}">borrar</a>
+<a href="/oferta/borrar/{{ param.oferta._id.toString() }}">borrar</a>
 {% endfor %}
 
 {% endblock %}

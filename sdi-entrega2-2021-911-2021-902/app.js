@@ -138,6 +138,15 @@ app.set('db', 'mongodb://admin:sdi@tiendamusica-shard-00-00.2azzu.mongodb.net:27
 app.set('clave', 'abcdefg');
 app.set('crypto', crypto);
 
+app.set('returnVista', function (req, vista, param) {
+    let respuesta = swig.renderFile('views/'+vista,
+        {
+            param: param,
+            session: req.session
+        });
+    return respuesta;
+});
+
 //Rutas/controladores por lógica
 require("./routes/rusuarios.js")(app, swig, gestorBD); // (app, param1, param2, etc.)
 require("./routes/rofertas.js")(app, swig, gestorBD); // (app, param1, param2, etc.)

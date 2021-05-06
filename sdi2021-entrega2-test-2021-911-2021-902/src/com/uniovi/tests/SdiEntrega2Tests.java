@@ -4,6 +4,8 @@ import java.util.List;
 //Paquetes JUnit 
 import org.junit.*;
 import org.junit.runners.MethodSorters;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 //Paquetes Selenium 
 import org.openqa.selenium.*;
@@ -144,7 +146,7 @@ public class SdiEntrega2Tests {
 		assertTrue(elementos.get(0)!=null);				
 	}	
 	
-	//PR08. Sin hacer /
+	//PR08. Iniciar sesión con datos inválidos /
 	@Test
 	public void PR08() {
 		// Vamos al formulario de login
@@ -201,49 +203,87 @@ public class SdiEntrega2Tests {
 		assertTrue("PR14 sin hacer", false);			
 	}	
 	
-	//PR15. Sin hacer /
+	//PR15. Crear una nueva oferta válida /
 	@Test
 	public void PR15() {
-		assertTrue("PR15 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");	
+		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/ofertas/agregar')]");
+		elementos.get(0).click();
+		PO_AddProductView.fillForm(driver, "Camiseta", "camiseta azul de seda", "20");
+		elementos = PO_View.checkElement(driver, "text", "Camiseta");
+		assertTrue(elementos.get(0) != null);
 	}	
 	
-	//PR16. Sin hacer /
+	//PR16. Intentar crear una oferta con datos inválidos /
 	@Test
 	public void PR16() {
-		assertTrue("PR16 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");	
+		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/ofertas/agregar')]");
+		elementos.get(0).click();
+		PO_AddProductView.fillForm(driver, "", "", "");	
+		elementos = PO_View.checkElement(driver, "text", "Título:");
+		assertTrue(elementos.get(0) != null);
 	}	
 	
-	//PR017. Sin hacer /
+	//PR017. Mostrar todas las ofertas del usuario /
 	@Test
 	public void PR17() {
-		assertTrue("PR17 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");
+		PO_View.checkElement(driver, "text", "Ladrillo");
+		PO_View.checkElement(driver, "text", "Coche");
+		PO_View.checkElement(driver, "text", "Borrador");
 	}	
 	
-	//PR18. Sin hacer /
+	//PR18. Borrar la primera oferta de la lista /
 	@Test
 	public void PR18() {
-		assertTrue("PR18 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");
+		int numero = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/modificar/')]").size();
+		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/eliminar/')]");
+		elementos.get(0).click();
+		int numero2 = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/modificar/')]").size();
+		assertEquals(numero-1,numero2);
 	}	
 	
-	//PR19. Sin hacer /
+	//PR19. Borrar la última oferta de la lista /
 	@Test
 	public void PR19() {
-		assertTrue("PR19 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba1@prueba1.com", "1234");
+		int numero = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/modificar/')]").size();
+		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/eliminar/')]");
+		elementos.get(elementos.size()-1).click();
+		int numero2 = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/modificar/')]").size();
+		assertEquals(numero-1,numero2);
 	}	
 	
-	//P20. Sin hacer /
+	//P20. Búsqueda con campo vacío /
 	@Test
 	public void PR20() {
 		assertTrue("PR20 sin hacer", false);			
 	}	
 	
-	//PR21. Sin hacer /
+	//PR21. Búsqueda inexistente /
 	@Test
 	public void PR21() {
 		assertTrue("PR21 sin hacer", false);			
 	}	
 	
-	//PR22. Sin hacer /
+	//PR22. Búsqueda de un producto existente /
 	@Test
 	public void PR22() {
 		assertTrue("PR22 sin hacer", false);			

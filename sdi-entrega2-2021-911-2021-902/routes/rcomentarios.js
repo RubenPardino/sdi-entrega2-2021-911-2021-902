@@ -24,7 +24,7 @@ module.exports = function(app, swig, gestorBD) {
         });
     });
 
-    app.post('/comentarios/:cancion_id', function (req, res) {
+    app.post('/comentarios/:oferta_id', function (req, res) {
         if ( req.session.rol === 2){
             res.send("Debes iniciar sesión antes de comentar");
             return;
@@ -33,13 +33,13 @@ module.exports = function(app, swig, gestorBD) {
         let comentario = {
             texto : req.body.texto,
             autor: req.session.usuario,
-            cancion_id: req.params.cancion_id
+            oferta_id: req.params.oferta_id
         }
         gestorBD.insertarComentario(comentario, function (id) {
             if (id == null) {
                 res.send("Error al insertar comentario");
             } else {
-                res.redirect("/oferta/"+req.params.cancion_id);
+                res.redirect("/oferta/"+req.params.oferta_id);
             }
         })
     });

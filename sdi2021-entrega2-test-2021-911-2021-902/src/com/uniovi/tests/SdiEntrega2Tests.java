@@ -168,11 +168,10 @@ public class SdiEntrega2Tests {
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Email:");
 		assertTrue(elementos.get(0)!=null);				
 	}	
-	//PR10. Comprobar que no está el botón de desconectar / FALLA
+	//PR10. Comprobar que no está el botón de desconectar /
 	@Test
 	public void PR10() {
-		List<WebElement> elementos = PO_View.checkElement(driver, "text", "desconectarse");
-		assertTrue(elementos.get(0)==null);			
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Desconectarse", PO_View.getTimeout());
 	}	
 	
 	//PR11. Mostrar el listado de usuarios al iniciar con la vista de administrador /
@@ -271,45 +270,84 @@ public class SdiEntrega2Tests {
 		assertEquals(numero-1,numero2);
 	}	
 	
-	//P20. Búsqueda con campo vacío /
+	//P20. Búsqueda con campo vacío / FALTA MEJORAR
 	@Test
 	public void PR20() {
-		assertTrue("PR20 sin hacer", false);			
+		PO_SearchView.fillForm(driver, "");
+		PO_View.checkElement(driver, "text", "Ladrillo");
+		PO_View.checkElement(driver, "text", "Coche");
+		PO_View.checkElement(driver, "text", "Borrador");
 	}	
 	
 	//PR21. Búsqueda inexistente /
 	@Test
 	public void PR21() {
-		assertTrue("PR21 sin hacer", false);			
+		PO_SearchView.fillForm(driver, "udshiu,dxcgigdfgsc");
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Detalles:", PO_View.getTimeout());
 	}	
 	
 	//PR22. Búsqueda de un producto existente /
 	@Test
 	public void PR22() {
-		assertTrue("PR22 sin hacer", false);			
+		PO_SearchView.fillForm(driver, "dri");
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Coche", PO_View.getTimeout());
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Borrador", PO_View.getTimeout());
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ladrillo");
+		assertTrue(elementos.size() == 1);
 	}	
 	
-	//PR23. Sin hacer /
+	//PR23. Comprar una oferta y comprobar actualización del dinero /
 	@Test
 	public void PR23() {
-		assertTrue("PR23 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ladrillo");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Comprar");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "94€");
 	}	
 	
-	//PR24. Sin hacer /
+	//PR24. Comprar una oferta y comprobar actualización del dinero a saldo 0 /
 	@Test
 	public void PR24() {
-		assertTrue("PR24 sin hacer", false);			
-	}	
-	//PR25. Sin hacer /
-	@Test
-	public void PR25() {
-		assertTrue("PR25 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba2@prueba2.com", "1234");	
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Tambor");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Comprar");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "0€");
 	}	
 	
-	//PR26. Sin hacer /
+	//PR25. Intentar comprar una oferta sin saldo suficiente /
+	@Test
+	public void PR25() {
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");	
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Coche");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Comprar");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "Saldo insuficiente");
+	}
+	
+	//PR26. Comprobar que están las ofertas compradas por el usuario /
 	@Test
 	public void PR26() {
-		assertTrue("PR26 sin hacer", false);			
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");	
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Compras");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "aaaaa");
 	}	
 	
 	//PR27. Sin hacer /

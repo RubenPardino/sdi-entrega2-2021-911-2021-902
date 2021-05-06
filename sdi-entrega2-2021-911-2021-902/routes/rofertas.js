@@ -24,8 +24,9 @@ module.exports = function (app, swig, gestorBD) {
             ofertaId: ofertaId
         }
 
-        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         let usuarioOferta = {"usuario": req.session.usuario, "ofertaId": gestorBD.mongo.ObjectID(req.params.id)};
+
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             gestorBD.obtenerCompras(usuarioOferta, function (compras) {
@@ -40,7 +41,26 @@ module.exports = function (app, swig, gestorBD) {
                                 if (idCompra == null) {
                                     res.send(respuesta);
                                 } else {
-                                    res.redirect("/compras");
+                                    let saldoNuevo = req.session.saldo - ofertas[0].precio
+
+                                    if (saldoNuevo > 0) {
+                                        let usuario = {
+                                            saldo: saldoNuevo
+                                        }
+                                        let criterio = {email: req.session.usuario};
+
+                                        gestorBD.modificarUsuario(criterio, usuario, function (result) {
+                                            if (result == null) {
+                                                res.send("Error al comprar ");
+                                            } else {
+                                                req.session.saldo = saldoNuevo;
+                                                res.redirect("/compras");
+                                            }
+                                        });
+                                    } else
+                                        res.redirect("/error" +
+                                            "?mensaje=Saldo insuficiente" +
+                                            "&tipoMensaje=alert-danger ");
                                 }
                             });
                         } else {

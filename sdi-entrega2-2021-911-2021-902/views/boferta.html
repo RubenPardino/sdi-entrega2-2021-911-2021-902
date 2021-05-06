@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block titulo %} Detalles de la oferta {{ oferta.nombre }} {% endblock %}
+{% block titulo %} Detalles de la oferta {{ oferta.titulo }} {% endblock %}
 
 {% block contenido_principal %}
 <div class="row">
@@ -9,7 +9,7 @@
             <h2>{{ param.oferta.titulo }}</h2>
             <p>{{ param.oferta.detalles }}</p>
             <p>{{ param.oferta.precio }} €</p>
-            {% if audio %}
+            {% if comprado %}
             <a class="btn btn-primary pull-right">Comprada</a>
             {% else %}
             <a class="btn btn-primary pull-right"

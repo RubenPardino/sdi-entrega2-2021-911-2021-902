@@ -18,14 +18,14 @@ module.exports = function (app, swig, gestorBD) {
     })
 
     app.get('/oferta/comprar/:id', function (req, res) {
-        let cancionId = gestorBD.mongo.ObjectID(req.params.id);
+        let ofertaId = gestorBD.mongo.ObjectID(req.params.id);
         let compra = {
             usuario: req.session.usuario,
-            cancionId: cancionId
+            cancionId: ofertaId
         }
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        let usuarioOferta = {"usuario": req.session.usuario, "cancionId": gestorBD.mongo.ObjectID(req.params.id)};
+        let usuarioOferta = {"usuario": req.session.usuario, "ofertaId": gestorBD.mongo.ObjectID(req.params.id)};
 
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             gestorBD.obtenerCompras(usuarioOferta, function (compras) {
@@ -143,8 +143,8 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/oferta/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        let criterioComentarios = {"cancion_id": req.params.id};
-        let usuarioOferta = {"usuario": req.session.usuario, "cancionId": gestorBD.mongo.ObjectID(req.params.id)};
+        let criterioComentarios = {"oferta_id": req.params.id};
+        let usuarioOferta = {"usuario": req.session.usuario, "ofertaId": gestorBD.mongo.ObjectID(req.params.id)};
 
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             gestorBD.obtenerComentarios(criterioComentarios, function (comentarios) {
@@ -153,68 +153,14 @@ module.exports = function (app, swig, gestorBD) {
                         res.send("Error al recuperar la canción.");
                     } else {
                         if (req.session.usuario === ofertas[0].autor) {
-                            let configuracion = {
-                                url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
-                                method: "get",
-                                headers: {
-                                    "token": "ejemplo",
-                                }
-                            }
-                            let rest = app.get("rest");
-                            rest(configuracion, function (error, response, body) {
-                                console.log("cod: " + response.statusCode + " Cuerpo :" + body);
-                                let objetoRespuesta = JSON.parse(body);
-                                let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
-                                // nuevo campo "usd"
-                                ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                res.send(app.get('returnVista')(req, 'boferta.html', {
-                                    oferta: ofertas[0],
-                                    comentarios: comentarios,
-                                }));
-                            })
-                        } else {
-                            if (compras.length == 0) {
-                                let configuracion = {
-                                    url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
-                                    method: "get",
-                                    headers: {
-                                        "token": "ejemplo",
-                                    }
-                                }
-                                let rest = app.get("rest");
-                                rest(configuracion, function (error, response, body) {
-                                    console.log("cod: " + response.statusCode + " Cuerpo :" + body);
-                                    let objetoRespuesta = JSON.parse(body);
-                                    let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
-                                    // nuevo campo "usd"
-                                    ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    res.send(app.get('returnVista')(req, 'boferta.html', {
-                                        oferta: ofertas[0],
-                                        comentarios: comentarios,
-                                    }));
-                                })
-                            } else {
-                                let configuracion = {
-                                    url: "https://www.freeforexapi.com/api/live?pairs=EURUSD",
-                                    method: "get",
-                                    headers: {
-                                        "token": "ejemplo",
-                                    }
-                                }
-                                let rest = app.get("rest");
-                                rest(configuracion, function (error, response, body) {
-                                    console.log("cod: " + response.statusCode + " Cuerpo :" + body);
-                                    let objetoRespuesta = JSON.parse(body);
-                                    let cambioUSD = objetoRespuesta.rates.EURUSD.rate;
-                                    // nuevo campo "usd"
-                                    ofertas[0].usd = cambioUSD * ofertas[0].precio;
-                                    res.send(app.get('returnVista')(req, 'boferta.html', {
-                                        oferta: ofertas[0],
-                                        comentarios: comentarios,
-                                    }));
-                                })
+                            res.send("No puedes comprar tu propia oferta ");
 
-                            }
+                        } else {
+                            res.send(app.get('returnVista')(req, 'boferta.html', {
+                                oferta: ofertas[0],
+                                comentarios: comentarios,
+                                comprado: compras.length != 0
+                            }))
                         }
 
                     }
@@ -231,7 +177,7 @@ module.exports = function (app, swig, gestorBD) {
             titulo: req.body.titulo,
             precio: req.body.precio,
             detalles: req.body.detalles,
-            fecha: datetime.toISOString().slice(0,10),
+            fecha: datetime.toISOString().slice(0, 10),
             autor: req.session.usuario
         }
         // Conectarse

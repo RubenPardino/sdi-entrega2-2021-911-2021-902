@@ -1,16 +1,16 @@
 <div id="widget-agregar" >
     <div class="form-group">
-        <label class="control-label col-sm-2" for="agregar-nombre">Nombre:</label>
+        <label class="control-label col-sm-2" for="agregar-titulo">Título:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" name="agregar-nombre"
-                   placeholder="Nombre de mi canción" id="agregar-nombre" />
+            <input type="text" class="form-control" name="agregar-titulo"
+                   placeholder="Título de mi oferta" id="agregar-titulo"/>
         </div>
     </div>
     <div class="form-group">
-        <label class="control-label col-sm-2" for="agregar-genero">Genero:</label>
+        <label class="control-label col-sm-2" for="agregar-detalles">Detalles:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" name="agregar-genero"
-                   placeholder="Nombre de mi canción" id="agregar-genero" />
+            <input type="text" class="form-control" name="agregar-detalles"
+                   placeholder="Detalles de mi oferta" id="agregar-detalles"/>
         </div>
     </div>
     <div class="form-group">
@@ -22,25 +22,25 @@
     </div>
     <div class="col-sm-offset-2 col-sm-10">
         <button type="button" class="btn btn-primary" id="boton-agregar"
-                onclick="agregarCancion()">Agregar</button>
+                onclick="agregarOferta()">Agregar</button>
     </div>
 </div>
 
 <script>
-    function agregarCancion( ) {
+    function agregarOferta( ) {
         $.ajax({
-            url: URLbase + "/cancion",
+            url: URLbase + "/oferta",
             type: "POST",
             data: {
-                nombre : $("#agregar-nombre").val(),
-                genero : $("#agregar-genero").val(),
+                titulo : $("#agregar-titulo").val(),
+                detalles : $("#agregar-detalles").val(),
                 precio : $("#agregar-precio").val()
             },
             dataType: 'json',
             headers: { "token": token },
             success: function(respuesta) {
                 console.log(respuesta); // <-- Prueba
-                $( "#contenedor-principal" ).load( "widget-canciones.html");
+                $( "#contenedor-principal" ).load( "widget-ofertas.html");
 
             },
             error : function (error){

@@ -35,24 +35,24 @@ module.exports = function (app, gestorBD) {
         let usuario = res.usuario;
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
-        let criterioCancion = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        let criterioOferta = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
-        gestorBD.obtenerOfertas(criterioCancion, function (oferta) {
+        gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
             if (oferta == null || oferta[0].autor !== usuario) {
                 res.status(403);
                 res.json({
                     error: "se ha producido un error"
                 })
             } else {
-                gestorBD.eliminarOferta(criterio, function (pfertas) {
-                    if (pfertas == null) {
+                gestorBD.eliminarOferta(criterio, function (ofertas) {
+                    if (ofertas == null) {
                         res.status(500);
                         res.json({
-                            error: "se ha producido un error al eliminar la canción"
+                            error: "se ha producido un error al eliminar la oferta"
                         })
                     } else {
                         res.status(200);
-                        res.send(JSON.stringify(pfertas));
+                        res.send(JSON.stringify(ofertas));
                     }
                 });
             }
@@ -68,24 +68,24 @@ module.exports = function (app, gestorBD) {
 
         let oferta = {}; // Solo los atributos a modificar
 
-        if (req.body.nombre != null) {
-            if (req.body.nombre.length >= 3)
-                oferta.nombre = req.body.nombre;
+        if (req.body.titulo != null) {
+            if (req.body.titulo.length >= 3)
+                oferta.titulo = req.body.titulo;
             else {
                 res.status(403);
                 res.json({
-                    error: "el nombre debe tener al menos 3 caracteres"
+                    error: "el título debe tener al menos 3 caracteres"
                 })
             }
         }
 
-        if (req.body.genero != null) {
-            if (req.body.genero.length >= 3) {
-                oferta.genero = req.body.genero;
+        if (req.body.detalles != null) {
+            if (req.body.detalles.length >= 3) {
+                oferta.detalles = req.body.detalles;
             } else {
                 res.status(403);
                 res.json({
-                    error: "el género debe tener al menos 3 caracteres"
+                    error: "los detalles deben tener al menos 3 caracteres"
                 })
             }
 
@@ -97,7 +97,7 @@ module.exports = function (app, gestorBD) {
             } else {
                 res.status(403);
                 res.json({
-                    error: "el precio de la canción debe ser mayor que 0"
+                    error: "el precio de la oferta debe ser mayor que 0"
                 })
             }
         }
@@ -131,9 +131,9 @@ module.exports = function (app, gestorBD) {
 
         let oferta = {};
 
-        if (req.body.nombre != null) {
-            if (req.body.nombre.length >= 3)
-                oferta.nombre = req.body.nombre;
+        if (req.body.titulo != null) {
+            if (req.body.titulo.length >= 3)
+                oferta.titulo = req.body.titulo;
             else {
                 res.status(403);
                 res.json({
@@ -142,9 +142,9 @@ module.exports = function (app, gestorBD) {
             }
         }
 
-        if (req.body.genero != null) {
-            if (req.body.genero.length >= 3) {
-                oferta.genero = req.body.genero;
+        if (req.body.detalles != null) {
+            if (req.body.detalles.length >= 3) {
+                oferta.detalles = req.body.detalles;
             } else {
                 res.status(403);
                 res.json({
@@ -160,7 +160,7 @@ module.exports = function (app, gestorBD) {
             } else {
                 res.status(403);
                 res.json({
-                    error: "el precio de la canción debe ser mayor que 0"
+                    error: "el precio de la oferta debe ser mayor que 0"
                 })
             }
         }
@@ -174,7 +174,7 @@ module.exports = function (app, gestorBD) {
             } else {
                 res.status(201);
                 res.json({
-                    mensaje: "canción insertada",
+                    mensaje: "oferta insertada",
                     _id: id
                 })
             }

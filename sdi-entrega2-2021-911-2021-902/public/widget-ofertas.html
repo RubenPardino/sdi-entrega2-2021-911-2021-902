@@ -1,0 +1,159 @@
+<div id="widget-canciones">
+    <input type="text" class="form-control" placeholder="Filtrar por título"
+           id="filtro-titulo"/>
+    <button class="btn btn-primary" onclick="widgetAgregar()">Nueva oferta</button>
+    <button class="btn" onclick="cargarOfertas()">Actualizar</button>
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th><a onclick="ordenarPorTitulo()">Título</a></th>
+            <th><a onclick="ordenarPorDetalles()">Detalles</a></th>
+            <th><a onclick="ordenarPorPrecio()">Precio</a></th>
+            <th class="col-md-1"></th>
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+</div>
+
+<script>
+    window.history.pushState("", "", "/cliente.html?w=ofertas");
+
+    var ofertas;
+
+    function cargarOfertas() {
+        $.ajax({
+            url: URLbase + "/oferta",
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error: function (error) {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    function actualizarTabla(ofertasMostrar) {
+        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        for (i = 0; i < ofertasMostrar.length; i++) {
+            $("#tablaCuerpo").append(
+                "<tr id=" + ofertasMostrar[i]._id + ">" +
+                "<td>" + ofertasMostrar[i].titulo + "</td>" +
+                "<td>" + ofertasMostrar[i].detalles + "</td>" +
+                "<td>" + ofertasMostrar[i].precio + "</td>" +
+                "<td>" +
+                "<a onclick=detalles('" + ofertasMostrar[i]._id + "')>Detalles</a><br>" +
+                "<a onclick=eliminar('" + ofertasMostrar[i]._id + "')>Eliminar</a>" +
+                "</td>" +
+                "</tr>");
+            // Mucho cuidado con las comillas del eliminarCancion
+            //la id tiene que ir entre comillas ' '
+        }
+    }
+
+    cargarOfertas();
+
+    function widgetAgregar() {
+        $("#contenedor-principal").load("widget-agregar.html");
+    }
+
+    function detalles(_id) {
+        idOfertaSeleccionada = _id;
+        $("#contenedor-principal").load("widget-detalles.html");
+    }
+
+    function eliminar(_id) {
+        $.ajax({
+            url: URLbase + "/oferta/" + _id,
+            type: "DELETE",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                console.log("Eliminada: " + _id);
+                $("#" + _id).remove(); // eliminar el <tr> de la oferta
+            },
+            error: function (error) {
+                console.log(error);
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    $('#filtro-titulo').on('input', function (e) {
+        var ofertasFiltradas = [];
+        var nombreFiltro = $("#filtro-titulo").val();
+
+        for (i = 0; i < ofertas.length; i++) {
+            if (ofertas[i].nombre.indexOf(nombreFiltro) != -1) {
+                ofertasFiltradas.push(ofertas[i]);
+            }
+        }
+        actualizarTabla(ofertasFiltradas);
+    });
+
+    var precioDsc = true;
+
+    function ordenarPorPrecio() {
+        if (precioDsc) {
+            ofertas.sort(function (a, b) {
+                return parseFloat(a.precio) - parseFloat(b.precio);
+            });
+        } else {
+            ofertas.sort(function (a, b) {
+                return parseFloat(b.precio) - parseFloat(a.precio);
+            });
+        }
+        actualizarTabla(ofertas);
+        precioDsc = !precioDsc; //invertir
+    }
+
+    var cambiadoTitulo = 0;
+
+    function ordenarPorTitulo() {
+        if (cambiadoTitulo === 0) {
+            ofertas.sort(function (a, b) {
+                if (a.titulo > b.titulo) return 1;
+                if (a.titulo < b.titulo) return -1;
+                return 0;
+            });
+            cambiadoTitulo++;
+        } else {
+            ofertas.sort(function (a, b) {
+                if (a.titulo < b.titulo) return 1;
+                if (a.titulo > b.titulo) return -1;
+                return 0;
+            });
+            cambiadoTitulo--;
+        }
+        actualizarTabla(ofertas);
+    }
+
+    var cambiadoDetalles = 0;
+
+    function ordenarPorDetalles() {
+        if (cambiadoDetalles === 0) {
+            ofertas.sort(function (a, b) {
+                if (a.detalles > b.detalles) return 1;
+                if (a.detalles < b.detalles) return -1;
+                return 0;
+            });
+            cambiadoDetalles++;
+        } else {
+            ofertas.sort(function (a, b) {
+                if (a.detalles < b.detalles) return 1;
+                if (a.detalles > b.detalles) return -1;
+                return 0;
+            });
+            cambiadoDetalles--;
+        }
+        actualizarTabla(ofertas);
+    }
+</script>

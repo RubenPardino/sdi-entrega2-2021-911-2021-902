@@ -37,13 +37,13 @@ module.exports = function (app, swig, gestorBD) {
                         res.send("La oferta es suya");
                     } else {
                         if (compras.length === 0) {
-                            gestorBD.insertarCompra(compra, function (idCompra) {
-                                if (idCompra == null) {
-                                    res.send(respuesta);
-                                } else {
-                                    let saldoNuevo = req.session.saldo - ofertas[0].precio
+                            let saldoNuevo = req.session.saldo - ofertas[0].precio
 
-                                    if (saldoNuevo > 0) {
+                            if (saldoNuevo >= 0) {
+                                gestorBD.insertarCompra(compra, function (idCompra) {
+                                    if (idCompra == null) {
+                                        res.send("Ha ocurrido un fallo al comprar la oferta");
+                                    } else {
                                         let usuario = {
                                             saldo: saldoNuevo
                                         }
@@ -57,12 +57,14 @@ module.exports = function (app, swig, gestorBD) {
                                                 res.redirect("/compras");
                                             }
                                         });
-                                    } else
-                                        res.redirect("/error" +
-                                            "?mensaje=Saldo insuficiente" +
-                                            "&tipoMensaje=alert-danger ");
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            else {
+                                res.redirect("/error" +
+                                    "?mensaje=Saldo insuficiente" +
+                                    "&tipoMensaje=alert-danger ");
+                            }
                         } else {
                             res.send("Ya has comprado la oferta");
                         }

@@ -21,7 +21,7 @@ module.exports = function (app, swig, gestorBD) {
         let ofertaId = gestorBD.mongo.ObjectID(req.params.id);
         let compra = {
             usuario: req.session.usuario,
-            cancionId: ofertaId
+            ofertaId: ofertaId
         }
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
@@ -61,7 +61,7 @@ module.exports = function (app, swig, gestorBD) {
             } else {
                 let ofertasCompradasIds = [];
                 for (i = 0; i < compras.length; i++) {
-                    ofertasCompradasIds.push(compras[i].cancionId);
+                    ofertasCompradasIds.push(compras[i].ofertaId);
                 }
 
                 let criterio = {"_id": {$in: ofertasCompradasIds}};
@@ -150,7 +150,7 @@ module.exports = function (app, swig, gestorBD) {
             gestorBD.obtenerComentarios(criterioComentarios, function (comentarios) {
                 gestorBD.obtenerCompras(usuarioOferta, function (compras) {
                     if (ofertas == null) {
-                        res.send("Error al recuperar la canción.");
+                        res.send("Error al recuperar la oferta.");
                     } else {
                         if (req.session.usuario === ofertas[0].autor) {
                             res.send("No puedes comprar tu propia oferta ");

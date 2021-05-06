@@ -99,7 +99,7 @@ module.exports = function (app, swig, gestorBD) {
             if (ofertas == null) {
                 res.send(respuesta);
             } else {
-                res.send(app.get('returnVista')(req, 'bofertaModificar.html', ofertas[0]));
+                res.send(app.get('returnVista')(req, 'bofertaModificar.html', {oferta: ofertas[0]}));
             }
         });
     });

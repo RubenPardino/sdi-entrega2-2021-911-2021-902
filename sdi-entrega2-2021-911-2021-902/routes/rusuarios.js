@@ -79,7 +79,7 @@ module.exports = function (app, swig, gestorBD) {
                 password: seguro
             }
             gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-                if (usuarios == null || usuarios.length == 0) {
+                if (usuarios == null || usuarios.length == 0 ) {
                     gestorBD.insertarUsuario(usuario, function (id) {
                         if (id == null) {
                             res.redirect("/error" +
@@ -103,8 +103,7 @@ module.exports = function (app, swig, gestorBD) {
                             });
                         }
                     });
-                }
-                else {
+                } else {
                     res.redirect("/error" +
                         "?mensaje=Usuario ya registrado anteriormente" +
                         "&tipoMensaje=alert-danger ");

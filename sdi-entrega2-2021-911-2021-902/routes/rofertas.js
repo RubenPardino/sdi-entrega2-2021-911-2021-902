@@ -245,7 +245,7 @@ module.exports = function (app, swig, gestorBD) {
         let datetime = new Date();
         let destacada = false;
 
-        if (req.body.destacada !== null) {
+        if (req.body.destacada != null) {
             destacada = true;
         }
 

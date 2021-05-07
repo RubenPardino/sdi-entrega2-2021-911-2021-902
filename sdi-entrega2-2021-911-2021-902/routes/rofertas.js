@@ -193,23 +193,54 @@ module.exports = function (app, swig, gestorBD) {
 
     app.post("/oferta", function (req, res) {
 
-        var datetime = new Date();
+        let datetime = new Date();
+        let destacada = false;
+
+        if (req.body.destacada !== null) {
+            destacada = true;
+        }
 
         let oferta = {
             titulo: req.body.titulo,
             precio: req.body.precio,
             detalles: req.body.detalles,
             fecha: datetime.toISOString().slice(0, 10),
-            autor: req.session.usuario
+            autor: req.session.usuario,
+            destacada: destacada
         }
-        // Conectarse
-        gestorBD.insertarOferta(oferta, function (id) {
-            if (id == null) {
-                res.send("Error al insertar oferta");
-            } else {
-                res.redirect("/publicaciones?mensaje=Oferta insertada");
+
+        let isValid = false;
+
+        if (destacada) {
+            let saldoNuevo = req.session.saldo - 20;
+
+            if (saldoNuevo >= 0) {
+                isValid = true;
+
+                let usuario = {
+                    saldo: saldoNuevo
+                }
+                let criterio = {email: req.session.usuario};
+
+                gestorBD.modificarUsuario(criterio, usuario, function (result) {
+                    if (result == null) {
+                        res.send("Error al crear oferta");
+                    } else {
+                        req.session.saldo = saldoNuevo;
+                    }
+                });
             }
-        });
+        }
+
+        if (destacada && isValid || !destacada) {
+            gestorBD.insertarOferta(oferta, function (id) {
+                if (id == null) {
+                    res.send("Error al insertar oferta");
+                } else {
+                    res.redirect("/publicaciones?mensaje=Oferta insertada");
+                }
+            });
+        }
     });
 
     app.post('/oferta/modificar/:id', function (req, res) {

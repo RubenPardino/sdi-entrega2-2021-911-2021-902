@@ -18,12 +18,18 @@
 			</tr>
 		</thead>
 		<tbody>
-		{% for oferta in param %}
+		{% for oferta in param.ofertas %}
 			<tr>
 				<td>{{ oferta.titulo }}</td>
 				<td>{{ oferta.precio }}</td>
-				<td><a href="/oferta/modificar/{{ oferta._id.toString() }}">Modificar</a> <br>
+				<td>
+					<a href="/oferta/modificar/{{ oferta._id.toString() }}">Modificar</a> <br>
 					<a href="/oferta/eliminar/{{ oferta._id.toString() }}">Eliminar</a> <br>
+					{% if oferta.destacada %}
+						<a>Oferta destacada</a> <br>
+					{% else %}
+						<a href="/oferta/destacar/{{ oferta._id.toString() }}">Destacar</a> <br>
+					{% endif %}
 			    </td>
 			</tr>
 		{% endfor %}
@@ -31,9 +37,31 @@
 	</table>
 </div>
 
-<!-- Agregar Oferta -->
-<div class="row text-right">
-	<a href="/ofertas/agregar" class="btn btn-info" role="button">Agregar oferta</a>
+<h2>Ofertas destacadas para usted</h2>
+
+<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+		<tr>
+			<th>Título</th>
+			<th>Precio</th>
+			<th class="col-md-1"></th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for oferta in param.ofertasDestacadas %}
+			{% if session.usuario !== oferta.autor %}
+			<tr>
+				<td>{{ oferta.titulo }}</td>
+				<td>{{ oferta.precio }}</td>
+				<td>
+					<a href="/oferta/{{ oferta._id.toString() }}">Comprar</a> <br>
+				</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+		</tbody>
+	</table>
 </div>
 
 {% endblock %}

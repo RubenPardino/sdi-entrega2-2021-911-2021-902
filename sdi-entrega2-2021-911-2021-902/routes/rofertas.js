@@ -94,7 +94,6 @@ module.exports = function (app, swig, gestorBD) {
         })
     });
 
-
     app.get('/oferta/modificar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
@@ -104,6 +103,45 @@ module.exports = function (app, swig, gestorBD) {
                 res.send(app.get('returnVista')(req, 'bofertaModificar.html', {oferta: ofertas[0]}));
             }
         });
+    });
+
+    app.get('/oferta/destacar/:id', function (req, res) {
+        let id = req.params.id;
+        let criterio = {"_id": gestorBD.mongo.ObjectID(id)};
+
+        let oferta = {
+            destacada: true
+        }
+
+        gestorBD.modificarOferta(criterio, oferta, function (result) {
+            if (result == null) {
+                res.send("Error al destacar oferta");
+            } else {
+                let saldoNuevo = req.session.saldo - 20;
+
+                if (saldoNuevo >= 0) {
+                    let usuario = {
+                        saldo: saldoNuevo
+                    }
+                    let criterio = {email: req.session.usuario};
+
+                    console.log(saldoNuevo);
+
+                    gestorBD.modificarUsuario(criterio, usuario, function (result) {
+                        if (result == null) {
+                            res.send("Error al destacar oferta");
+                        } else {
+                            req.session.saldo = saldoNuevo;
+                            res.redirect("/publicaciones?mensaje=Oferta destacada")
+                        }
+                    });
+                    ;
+                } else {
+                    res.send("Saldo insuficiente para destacar la oferta");
+                }
+            }
+        });
+
     });
 
     app.get('/ofertas/:id', function (req, res) {
@@ -153,12 +191,23 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get("/publicaciones", function (req, res) {
         let criterio = {autor: req.session.usuario};
+        let criterioDestacadas = {destacada: true};
 
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             if (ofertas == null) {
-                res.send("Error al listar ");
+                res.send("Error al listar");
             } else {
-                res.send(app.get('returnVista')(req, 'bpublicaciones.html', ofertas));
+                gestorBD.obtenerOfertas(criterioDestacadas, function (ofertasDestacadas) {
+                    if (ofertasDestacadas == null) {
+                        res.send("Error al listar destacadas");
+                    } else {
+
+                        res.send(app.get('returnVista')(req, 'bpublicaciones.html', {
+                            ofertas: ofertas,
+                            ofertasDestacadas: ofertasDestacadas
+                        }));
+                    }
+                });
             }
         });
     });
@@ -260,6 +309,6 @@ module.exports = function (app, swig, gestorBD) {
                 res.redirect("/publicaciones?mensaje=Oferta modificada");
             }
         });
-    })
+    });
 
 };

@@ -2,6 +2,8 @@ module.exports = function (app, gestorBD) {
 
     app.get("/api/ofertas", function (req, res) {
         gestorBD.obtenerOfertas({}, function (ofertas) {
+            ofertas = ofertas.filter(n => n.autor !== res.usuario)
+
             if (ofertas == null) {
                 res.status(500);
                 res.json({

@@ -389,6 +389,7 @@ public class SdiEntrega2Tests {
 		assertEquals(saldoAnt - 20, saldo, 0);
 		PO_HomeView.clickOption(driver, "desconectarse", "class", "btn btn-primary");
 		PO_LoginView.fillForm(driver, "j@gmail.com", "1234");
+		//
 		
 		
 	}

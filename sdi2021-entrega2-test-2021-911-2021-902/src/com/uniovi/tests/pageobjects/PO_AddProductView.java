@@ -18,33 +18,46 @@ public class PO_AddProductView extends PO_NavView {
 		lastname.click();
 		lastname.clear();
 		lastname.sendKeys(pricep);
-	
+
 		By boton = By.className("btn");
 		driver.findElement(boton).click();
 	}
-	
-	/*
-	static public void fillFormDestacado(WebDriver driver, String titlep, String descriptionp, String pricep) {
-		WebElement email = driver.findElement(By.name("title"));
+
+	static public void fillForm2(WebDriver driver, String titlep, String descriptionp, String pricep) {
+		// TODO Auto-generated method stub
+		WebElement email = driver.findElement(By.name("titulo"));
 		email.click();
 		email.clear();
 		email.sendKeys(titlep);
-		WebElement name = driver.findElement(By.name("description"));
+		WebElement name = driver.findElement(By.name("detalles"));
 		name.click();
 		name.clear();
 		name.sendKeys(descriptionp);
-		WebElement lastname = driver.findElement(By.name("money"));
+		WebElement lastname = driver.findElement(By.name("precio"));
 		lastname.click();
 		lastname.clear();
 		lastname.sendKeys(pricep);
-		
-		WebElement destacado = driver.findElement(By.name("destacado"));
-		destacado.click();
-		
+		WebElement destacada = driver.findElement(By.name("destacada"));
+		destacada.click();
+
 		By boton = By.className("btn");
 		driver.findElement(boton).click();
 	}
-	*/
 
+	/*
+	 * static public void fillFormDestacado(WebDriver driver, String titlep, String
+	 * descriptionp, String pricep) { WebElement email =
+	 * driver.findElement(By.name("title")); email.click(); email.clear();
+	 * email.sendKeys(titlep); WebElement name =
+	 * driver.findElement(By.name("description")); name.click(); name.clear();
+	 * name.sendKeys(descriptionp); WebElement lastname =
+	 * driver.findElement(By.name("money")); lastname.click(); lastname.clear();
+	 * lastname.sendKeys(pricep);
+	 * 
+	 * WebElement destacado = driver.findElement(By.name("destacado"));
+	 * destacado.click();
+	 * 
+	 * By boton = By.className("btn"); driver.findElement(boton).click(); }
+	 */
 
 }

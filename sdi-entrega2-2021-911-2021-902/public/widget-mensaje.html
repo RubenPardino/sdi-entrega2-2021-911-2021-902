@@ -1,0 +1,85 @@
+<div id="widget-agregar">
+    <table class="table table-hover">
+        <thead>
+        <tr>
+            <th>Mensaje
+            <th>Propietario</th>
+
+        </tr>
+        </thead>
+        <tbody id="tablaCuerpo">
+
+        </tbody>
+    </table>
+
+    <div class="form-group">
+        <div class="col-sm-10">
+            <input type="text" class="form-control" name="texto"
+                   placeholder="Comentario" required="true" id="texto"
+                   value="Comentario"/>
+        </div>
+
+
+        <button type="button" class="btn btn-primary" id="boton-agregar"
+                onclick="agregarMensaje()">Enviar
+        </button>
+    </div>
+
+</div>
+
+<script>
+    function agregarMensaje() {
+        $.ajax({
+            url: URLbase + "/mensaje",
+            type: "POST",
+            data: {
+                oferta: idOfertaSeleccionada,
+                mensaje: $("#texto").val()
+            },
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                console.log(respuesta); // <-- Prueba
+                $("#contenedor-principal").load("widget-mensaje.html");
+
+            },
+            error: function (error) {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    var ofertas;
+
+    function cargarMensajes() {
+        $.ajax({
+            url: URLbase + "/conversacion/" + idOfertaSeleccionada,
+            type: "GET",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                ofertas = respuesta;
+                actualizarTabla(ofertas);
+            },
+            error: function (error) {
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+    function actualizarTabla(mensajesMostrar) {
+        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        for (i = 0; i < mensajesMostrar.length; i++) {
+            $("#tablaCuerpo").append(
+                "<tr>" +
+                "<td>" + mensajesMostrar[i].mensaje + "</td>" +
+                "<td>" + mensajesMostrar[i].propietario + "</td>" +
+                "</td>" +
+                "</tr>");
+        }
+    }
+
+    cargarMensajes();
+
+</script>

@@ -175,7 +175,7 @@ module.exports = function (app, gestorBD) {
         Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje
         y el mensaje que quieres enviar y lo guarda.
     */
-    app.post("/api/mensaje", function (req, res) {
+    app.post("/api/mensaje/", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.oferta)};
 
@@ -212,14 +212,18 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-    app.post("/api/conversacion", function (req, res) {
+    app.get("/api/conversacion/:id", function (req, res) {
 
         let criterio = {
-            oferta: req.body.oferta
+            oferta: req.params.id,
+            interesado: res.usuario
         }
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
-
+            res.status(200);
+            res.json({
+                comentarios: comentarios,
+            })
         })
     });
 

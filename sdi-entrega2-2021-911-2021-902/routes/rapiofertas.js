@@ -1,6 +1,6 @@
 module.exports = function (app, gestorBD) {
 
-    app.get("/api/oferta", function (req, res) {
+    app.get("/api/ofertas", function (req, res) {
         gestorBD.obtenerOfertas({}, function (ofertas) {
             if (ofertas == null) {
                 res.status(500);
@@ -176,6 +176,43 @@ module.exports = function (app, gestorBD) {
                 res.json({
                     mensaje: "oferta insertada",
                     _id: id
+                })
+            }
+        });
+    });
+
+    app.post("/api/mensaje/:id", function (req, res) {
+
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        
+        gestorBD.obtenerOfertas(criterio, function (ofertas) {
+            if (ofertas[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al buscar la oferta"
+                })
+            } else {
+                let mensaje = {
+                    propietario: ofertas[0].autor,
+                    interesado: res.usuario,
+                    oferta: req.params.id,
+                    mensaje: req.body.mensaje,
+                    leido: false
+                }
+                
+                gestorBD.insertarComentario(mensaje, function (id) {
+                    if (id == null) {
+                        res.status(500);
+                        res.json({
+                            error: "se ha producido un error al enviar el mensaje"
+                        })
+                    } else {
+                        res.status(201);
+                        res.json({
+                            mensaje: "mensaje enviado",
+                            _id: id
+                        })
+                    }
                 })
             }
         });

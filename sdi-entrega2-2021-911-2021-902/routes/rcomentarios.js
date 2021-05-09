@@ -30,18 +30,29 @@ module.exports = function(app, swig, gestorBD) {
             return;
         }
 
-        let comentario = {
-            texto : req.body.texto,
-            autor: req.session.usuario,
-            oferta_id: req.params.oferta_id
-        }
-        gestorBD.insertarComentario(comentario, function (id) {
-            if (id == null) {
-                res.send("Error al insertar comentario");
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.oferta_id)};
+
+        gestorBD.obtenerOfertas(criterio, function (ofertas) {
+            if (ofertas[0] == null) {
+                res.send("Error al encontrar la oferta");
             } else {
-                res.redirect("/oferta/"+req.params.oferta_id);
+                let mensaje = {
+                    propietario: ofertas[0].autor,
+                    interesado: req.session.usuario,
+                    oferta: req.params.oferta_id,
+                    mensaje: req.body.texto,
+                    leido: false
+                }
+
+                gestorBD.insertarComentario(mensaje, function (id) {
+                    if (id == null) {
+                        res.send("Error al insertar comentario");
+                    } else {
+                        res.redirect("/oferta/"+req.params.oferta_id);
+                    }
+                })
             }
-        })
+        });
     });
 
 };

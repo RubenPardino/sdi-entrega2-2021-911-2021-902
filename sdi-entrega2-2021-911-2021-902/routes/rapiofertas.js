@@ -181,9 +181,13 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-    app.post("/api/mensaje/:id", function (req, res) {
+    /*
+        Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje
+        y el mensaje que quieres enviar y lo guarda.
+    */
+    app.post("/api/mensaje/", function (req, res) {
 
-        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.oferta)};
         
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             if (ofertas[0] == null) {
@@ -195,7 +199,7 @@ module.exports = function (app, gestorBD) {
                 let mensaje = {
                     propietario: ofertas[0].autor,
                     interesado: res.usuario,
-                    oferta: req.params.id,
+                    oferta: req.body.oferta,
                     mensaje: req.body.mensaje,
                     leido: false
                 }

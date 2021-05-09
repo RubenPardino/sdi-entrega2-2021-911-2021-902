@@ -188,7 +188,7 @@ module.exports = function (app, gestorBD) {
     app.post("/api/mensaje", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.oferta)};
-        
+
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
             if (ofertas[0] == null) {
                 res.status(500);
@@ -203,7 +203,7 @@ module.exports = function (app, gestorBD) {
                     mensaje: req.body.mensaje,
                     leido: false
                 }
-                
+
                 gestorBD.insertarComentario(mensaje, function (id) {
                     if (id == null) {
                         res.status(500);
@@ -229,7 +229,7 @@ module.exports = function (app, gestorBD) {
         }
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
-            
+
         })
     });
 

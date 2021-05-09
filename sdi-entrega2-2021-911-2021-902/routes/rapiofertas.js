@@ -185,7 +185,7 @@ module.exports = function (app, gestorBD) {
         Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje
         y el mensaje que quieres enviar y lo guarda.
     */
-    app.post("/api/mensaje/", function (req, res) {
+    app.post("/api/mensaje", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.oferta)};
         
@@ -222,7 +222,18 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-    app.post("/api/autenticar/", function (req, res) {
+    app.post("/api/conversacion", function (req, res) {
+
+        let criterio = {
+            oferta: req.body.oferta
+        }
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            
+        })
+    });
+
+    app.post("/api/autenticar", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex')
 
         let criterio = {

@@ -69,6 +69,7 @@ routerUsuarioToken.use(function (req, res, next) {
 // Aplicar routerUsuarioToken
 app.use('/api/ofertas', routerUsuarioToken);
 app.use('/api/mensaje', routerUsuarioToken);
+app.use('/api/conversacion', routerUsuarioToken);
 
 let gestorBD = require("./modules/gestorBD.js");
 gestorBD.init(app, mongo);

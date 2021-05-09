@@ -172,10 +172,16 @@ module.exports = function (app, gestorBD) {
     });
 
     /*
-        Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje
-        y el mensaje que quieres enviar y lo guarda.
+        Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje, el mensaje
+        que quieres enviar, y en caso de ser el propietario de la oferta, el receptor al que le llegará el mensaje.
     */
     app.post("/api/mensaje/", function (req, res) {
+        if (req.body.oferta == null || req.body.mensaje == null) {
+            res.status(500);
+            res.json({
+                error: "debes indicar la oferta y el mensaje que quieres enviar"
+            })
+        }
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.oferta)};
 
@@ -186,30 +192,76 @@ module.exports = function (app, gestorBD) {
                     error: "se ha producido un error al buscar la oferta"
                 })
             } else {
-                let mensaje = {
-                    propietario: ofertas[0].autor,
-                    interesado: res.usuario,
-                    oferta: req.body.oferta,
-                    mensaje: req.body.mensaje,
-                    leido: false
-                }
-
-                gestorBD.insertarComentario(mensaje, function (id) {
-                    if (id == null) {
+                if (res.usuario === ofertas[0].autor) {
+                    if (req.body.receptor == null) {
                         res.status(500);
                         res.json({
-                            error: "se ha producido un error al enviar el mensaje"
+                            error: "debes indicar el receptor al que quieres enviar el mensaje"
                         })
                     } else {
-                        res.status(201);
-                        res.json({
-                            mensaje: "mensaje enviado",
-                            _id: id
-                        })
+                        let criterioOferta = { "emisor": req.body.receptor, "oferta": req.body.oferta }
+
+                        gestorBD.obtenerComentarios(criterioOferta, function (comentarios) {
+                            if (comentarios[0] == null) {
+                                res.status(500);
+                                res.json({
+                                    error: "el interesado debe de ser quien inicie la conversación"
+                                })
+                            } else {
+                                let mensaje = {
+                                    receptor: req.body.receptor,
+                                    emisor: res.usuario,
+                                    oferta: req.body.oferta,
+                                    fecha: Date.now(),
+                                    mensaje: req.body.mensaje,
+                                    leido: false
+                                }
+
+                                gestorBD.insertarComentario(mensaje, function (id) {
+                                    if (id == null) {
+                                        res.status(500);
+                                        res.json({
+                                            error: "se ha producido un error al enviar el mensaje"
+                                        })
+                                    } else {
+                                        res.status(201);
+                                        res.json({
+                                            mensaje: "mensaje enviado",
+                                            _id: id
+                                        })
+                                    }
+                                })
+                            }
+                        });
                     }
-                })
+                } else {
+                    let mensaje = {
+                        receptor: ofertas[0].autor,
+                        emisor: res.usuario,
+                        oferta: req.body.oferta,
+                        fecha: Date.now(),
+                        mensaje: req.body.mensaje,
+                        leido: false
+                    }
+
+                    gestorBD.insertarComentario(mensaje, function (id) {
+                        if (id == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al enviar el mensaje"
+                            })
+                        } else {
+                            res.status(201);
+                            res.json({
+                                mensaje: "mensaje enviado",
+                                _id: id
+                            })
+                        }
+                    })
+                }
             }
         });
+
     });
 
     app.get("/api/conversacion/:id", function (req, res) {

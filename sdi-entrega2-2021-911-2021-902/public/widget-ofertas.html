@@ -9,6 +9,7 @@
             <th><a onclick="ordenarPorTitulo()">Título</a></th>
             <th><a onclick="ordenarPorDetalles()">Detalles</a></th>
             <th><a onclick="ordenarPorPrecio()">Precio</a></th>
+            <th><a onclick="ordenarPorEmail()">Email</a></th>
             <th class="col-md-1"></th>
         </tr>
         </thead>
@@ -48,6 +49,7 @@
                 "<td>" + ofertasMostrar[i].titulo + "</td>" +
                 "<td>" + ofertasMostrar[i].detalles + "</td>" +
                 "<td>" + ofertasMostrar[i].precio + "</td>" +
+                "<td>" + ofertasMostrar[i].autor + "</td>" +
                 "<td>" +
                 "<a onclick=detalles('" + ofertasMostrar[i]._id + "')>Detalles</a><br>" +
                 "<a onclick=eliminar('" + ofertasMostrar[i]._id + "')>Eliminar</a>" +
@@ -153,6 +155,27 @@
                 return 0;
             });
             cambiadoDetalles--;
+        }
+        actualizarTabla(ofertas);
+    }
+
+    var cambiadoEmail = 0;
+
+    function ordenarPorEmail() {
+        if (cambiadoEmail === 0) {
+            ofertas.sort(function (a, b) {
+                if (a.autor > b.autor) return 1;
+                if (a.autor < b.autor) return -1;
+                return 0;
+            });
+            cambiadoEmail++;
+        } else {
+            ofertas.sort(function (a, b) {
+                if (a.autor < b.autor) return 1;
+                if (a.autor > b.autor) return -1;
+                return 0;
+            });
+            cambiadoEmail--;
         }
         actualizarTabla(ofertas);
     }

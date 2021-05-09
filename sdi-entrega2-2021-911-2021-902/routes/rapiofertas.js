@@ -32,29 +32,17 @@ module.exports = function (app, gestorBD) {
 
     app.delete("/api/oferta/:id", function (req, res) {
 
-        let usuario = res.usuario;
-
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
-        let criterioOferta = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
-        gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
-            if (oferta == null || oferta[0].autor !== usuario) {
-                res.status(403);
+        gestorBD.eliminarOferta(criterio, function (ofertas) {
+            if (ofertas == null) {
+                res.status(500);
                 res.json({
-                    error: "se ha producido un error"
+                    error: "se ha producido un error al eliminar la oferta"
                 })
             } else {
-                gestorBD.eliminarOferta(criterio, function (ofertas) {
-                    if (ofertas == null) {
-                        res.status(500);
-                        res.json({
-                            error: "se ha producido un error al eliminar la oferta"
-                        })
-                    } else {
-                        res.status(200);
-                        res.send(JSON.stringify(ofertas));
-                    }
-                });
+                res.status(200);
+                res.send(JSON.stringify(ofertas));
             }
         });
     });

@@ -199,16 +199,50 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "prueba10@test.com");
 	}
 
-	// PR12. Sin hacer /
+	// PR12.Ir a la lista de usuarios, borrar el primer usuario de la lista,
+	// comprobar que la lista se
+	// actualiza y dicho usuario desaparece.
 	@Test
 	public void PR12() {
-		assertTrue("PR12 sin hacer", false);
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
+		List<WebElement> elementos = PO_View.checkElement(driver, "free",
+				"/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementosAnt = elementos.size();
+
+		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
+		elementos.get(0).click();
+		By boton = By.className("btn");
+		driver.findElement(boton).click();
+
+		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementos = elementos.size();
+
+		SeleniumUtils.esperarSegundos(driver, 10);
+		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
 	// PR13. Sin hacer /
 	@Test
 	public void PR13() {
-		assertTrue("PR13 sin hacer", false);
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
+		List<WebElement> elementos = PO_View.checkElement(driver, "free",
+				"/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementosAnt = elementos.size();
+
+		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
+		elementos.get(elementos.size() - 1).click();
+		By boton = By.className("btn");
+		driver.findElement(boton).click();
+
+		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementos = elementos.size();
+
+		SeleniumUtils.esperarSegundos(driver, 10);
+		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
 	// PR14. Sin hacer /
@@ -387,17 +421,61 @@ public class SdiEntrega2Tests {
 		elementos = PO_View.checkElement(driver, "text", "€");
 		double saldo = Double.valueOf(elementos.get(0).getText().split("-")[1].split("€")[0]);
 		assertEquals(saldoAnt - 20, saldo, 0);
-		PO_HomeView.clickOption(driver, "desconectarse", "class", "btn btn-primary");
-		PO_LoginView.fillForm(driver, "j@gmail.com", "1234");
-		//
-		
-		
+		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div[3]/table/tbody/tr/td[1]");
+		String elemento = elementos.get(elementos.size() - 1).getText();
+		assertTrue(elemento.contains("Camiseta"));
 	}
 
-	// PR029. Sin hacer /
+	// PR028.Sobre el listado de ofertas de un usuario con más de 20 euros de saldo,
+	// pinchar en el
+	// enlace Destacada y a continuación comprobar: i) que aparece en el listado de
+	// ofertas destacadas
+	// para los usuarios y que el saldo del usuario se actualiza adecuadamente en la
+	// vista del ofertante (-
+	// 20).
+	@Test
+	public void PR28() {
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Publicaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		int destacadosAnt = elementos.size();
+
+		elementos = PO_View.checkElement(driver, "text", "€");
+		double saldoAnt = Double.valueOf(elementos.get(0).getText().split("-")[1].split("€")[0]);
+
+		elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/destacar')]");
+		elementos.get(0).click();
+
+		elementos = PO_View.checkElement(driver, "text", "€");
+		double saldo = Double.valueOf(elementos.get(0).getText().split("-")[1].split("€")[0]);
+		assertEquals(saldoAnt - 20, saldo, 0);
+
+		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		int destacados = elementos.size();
+
+		assertEquals(destacadosAnt + 1, destacados);
+	}
+
+	// PR029.Sobre el listado de ofertas de un usuario con menos de 20 euros de
+	// saldo, pinchar en el
+	// enlace Destacada y a continuación comprobar que se muestra el mensaje de
+	// saldo no suficiente.
 	@Test
 	public void PR29() {
-		assertTrue("PR29 sin hacer", false);
+		// Vamos al formulario de login
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "saldo0@saldo0.com", "saldo0");
+		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/ofertas/agregar')]");
+		elementos.get(0).click();
+		PO_AddProductView.fillForm(driver, "Camiseta", "camiseta azul de seda", "20");
+		elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/destacar')]");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "Saldo insuficiente para destacar la oferta");
 	}
 
 	// PR030. Sin hacer /

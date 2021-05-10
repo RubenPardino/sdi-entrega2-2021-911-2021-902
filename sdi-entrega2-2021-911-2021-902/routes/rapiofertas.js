@@ -87,6 +87,55 @@ module.exports = function (app, gestorBD) {
         })
     });
 
+    /*
+        Método que devuelve todas las conversaciones de un usuario identificado
+    */
+    app.get("/api/conversaciones", function (req, res) {
+        let criterio = { $or: [ { "emisor": res.usuario }, { "receptor": res.usuario } ] }
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            if (comentarios[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar los comentarios"
+                })
+            } else {
+                let comentariosPropietario = [];
+                let comentariosInteresado = [];
+
+                let i = 1;
+
+                for (let comentario of comentarios) {
+                    let criterioOferta = { "_id": gestorBD.mongo.ObjectID(comentario.oferta) }
+
+                    gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
+                        if (oferta == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al comprobar las ofertas de los comentarios"
+                            })
+                        } else {
+                            i++;
+                            if (oferta[0].autor === res.usuario) {
+                                comentariosPropietario.push(comentario);
+                            } else {
+                                comentariosInteresado.push(comentario);
+                            }
+
+                            if (i === comentarios.length) {
+                                res.status(200);
+                                res.send({
+                                    "Conversaciones como propietario": JSON.stringify(comentariosPropietario),
+                                    "Conversaciones como interesado": JSON.stringify(comentariosInteresado)
+                                });
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    })
+
     app.delete("/api/oferta/:id", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
@@ -318,6 +367,47 @@ module.exports = function (app, gestorBD) {
         });
 
     });
+
+    /*
+        Método que pone en leído un mensaje que le pasas por el cuerpo
+    */
+    app.post("/api/mensaje/leer", function (req, res) {
+        let criterio = { "_id": gestorBD.mongo.ObjectID(req.body.mensaje) }
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            if (comentarios[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar el comentario"
+                })
+            } else {
+                if (res.usuario === comentarios[0].receptor || res.usuario === comentarios[0].emisor) {
+                    comentarios[0].leido = true;
+
+                    gestorBD.modificarMensaje(criterio, comentarios[0], function (result) {
+                        if (result == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al marcar el mensaje como leído"
+                            })
+                        } else {
+                            res.status(200);
+                            res.json({
+                                mensaje: "mensaje marcado como leído",
+                                _id: req.params.id
+                            })
+                        }
+                    })
+                } else {
+                    res.status(500);
+                    res.json({
+                        error: "no puedes modificar un mensaje que no es tuyo"
+                    })
+                }
+            }
+        })
+
+    })
 
     app.post("/api/autenticar", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex')

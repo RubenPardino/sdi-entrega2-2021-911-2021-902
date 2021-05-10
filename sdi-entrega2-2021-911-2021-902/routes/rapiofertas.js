@@ -66,7 +66,8 @@ module.exports = function (app, gestorBD) {
                     }
 
                     gestorBD.obtenerComentarios(criterio, function (comentarios) {
-                        if (comentarios[0] == null) {
+                        if (comentarios == null) {
+
                             res.status(500);
                             res.json({
                                 error: "se ha producido un error al recuperar los comentarios"

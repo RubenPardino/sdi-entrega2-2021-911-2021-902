@@ -1,8 +1,4 @@
 <div id="widget-canciones">
-    <input type="text" class="form-control" placeholder="Filtrar por título"
-           id="filtro-titulo"/>
-    <button class="btn btn-primary" onclick="widgetAgregar()">Nueva oferta</button>
-    <button class="btn" onclick="cargarOfertas()">Actualizar</button>
         <table class="table table-hover">
         <thead>
         <tr>
@@ -51,10 +47,7 @@
                 "<td>" + ofertasMostrar[i].precio + "</td>" +
                 "<td>" + ofertasMostrar[i].autor + "</td>" +
                 "<td>" +
-                "<a onclick=detalles('" + ofertasMostrar[i]._id + "')>Detalles</a><br>" +
-                "<a onclick=eliminar('" + ofertasMostrar[i]._id + "')>Eliminar</a><br>" +
                 "<a onclick=mensaje('" + ofertasMostrar[i]._id + "')>Mensaje</a>" +
-
                 "</td>" +
                 "</tr>");
             // Mucho cuidado con las comillas del eliminarCancion
@@ -64,50 +57,10 @@
 
     cargarOfertas();
 
-    function widgetAgregar() {
-        $("#contenedor-principal").load("widget-agregar.html");
-    }
-
-    function detalles(_id) {
-        idOfertaSeleccionada = _id;
-        $("#contenedor-principal").load("widget-detalles.html");
-    }
-
     function mensaje(_id) {
         idOfertaSeleccionada = _id;
         $("#contenedor-principal").load("widget-mensaje.html");
     }
-
-
-    function eliminar(_id) {
-        $.ajax({
-            url: URLbase + "/oferta/" + _id,
-            type: "DELETE",
-            data: {},
-            dataType: 'json',
-            headers: {"token": token},
-            success: function (respuesta) {
-                console.log("Eliminada: " + _id);
-                $("#" + _id).remove(); // eliminar el <tr> de la oferta
-            },
-            error: function (error) {
-                console.log(error);
-                $("#contenedor-principal").load("widget-login.html");
-            }
-        });
-    }
-
-    $('#filtro-titulo').on('input', function (e) {
-        var ofertasFiltradas = [];
-        var nombreFiltro = $("#filtro-titulo").val();
-
-        for (i = 0; i < ofertas.length; i++) {
-            if (ofertas[i].nombre.indexOf(nombreFiltro) != -1) {
-                ofertasFiltradas.push(ofertas[i]);
-            }
-        }
-        actualizarTabla(ofertasFiltradas);
-    });
 
     var precioDsc = true;
 

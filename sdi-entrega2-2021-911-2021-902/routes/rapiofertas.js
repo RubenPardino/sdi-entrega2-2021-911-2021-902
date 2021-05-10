@@ -16,22 +16,6 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-    app.get("/api/oferta/:id", function (req, res) {
-        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
-
-        gestorBD.obtenerOfertas(criterio, function (oferta) {
-            if (oferta == null) {
-                res.status(500);
-                res.json({
-                    error: "se ha producido un error"
-                })
-            } else {
-                res.status(200);
-                res.send(JSON.stringify(oferta[0]));
-            }
-        });
-    });
-
     /*
         Método que devuelve la conversación que tuviste con el propietario de una oferta que pasas por parámetro si eres el interesado,
         si eres el propietario de la oferta, deberás elegir la persona con la que tuviste la conversación y pasarla por la URL
@@ -53,7 +37,12 @@ module.exports = function (app, gestorBD) {
                             error: "al ser el propietario de la oferta, debes indicar el usuario de la conversación que quieres sacar"
                         })
                     } else {
-                        let criterio = { "oferta": ofertas[0]._id.toString(), $or: [ { "emisor": ofertas[0].autor, "receptor": req.query.usuario }, { "emisor": req.query.usuario, "receptor": ofertas[0].autor }] }
+                        let criterio = {"oferta": ofertas[0]._id.toString(),
+                            $or: [{
+                                "emisor": ofertas[0].autor,
+                                "receptor": req.query.usuario
+                            }, {"emisor": req.query.usuario, "receptor": ofertas[0].autor}]
+                        }
 
                         gestorBD.obtenerComentarios(criterio, function (comentarios) {
                             if (comentarios[0] == null) {
@@ -69,7 +58,12 @@ module.exports = function (app, gestorBD) {
                     }
 
                 } else {
-                    let criterio = { "oferta": ofertas[0]._id.toString(), $or: [ { "emisor": ofertas[0].autor, "receptor": res.usuario }, { "emisor": res.usuario, "receptor": ofertas[0].autor }] }
+                    let criterio = {"oferta": ofertas[0]._id.toString(),
+                        $or: [{"emisor": ofertas[0].autor, "receptor": res.usuario}, {
+                            "emisor": res.usuario,
+                            "receptor": ofertas[0].autor
+                        }]
+                    }
 
                     gestorBD.obtenerComentarios(criterio, function (comentarios) {
                         if (comentarios[0] == null) {
@@ -91,7 +85,7 @@ module.exports = function (app, gestorBD) {
         Método que devuelve todas las conversaciones de un usuario identificado
     */
     app.get("/api/conversaciones", function (req, res) {
-        let criterio = { $or: [ { "emisor": res.usuario }, { "receptor": res.usuario } ] }
+        let criterio = {$or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
             if (comentarios[0] == null) {
@@ -106,7 +100,7 @@ module.exports = function (app, gestorBD) {
                 let i = 1;
 
                 for (let comentario of comentarios) {
-                    let criterioOferta = { "_id": gestorBD.mongo.ObjectID(comentario.oferta) }
+                    let criterioOferta = {"_id": gestorBD.mongo.ObjectID(comentario.oferta)}
 
                     gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
                         if (oferta == null) {
@@ -136,145 +130,6 @@ module.exports = function (app, gestorBD) {
         })
     })
 
-    app.delete("/api/oferta/:id", function (req, res) {
-
-        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
-
-        gestorBD.eliminarOferta(criterio, function (ofertas) {
-            if (ofertas == null) {
-                res.status(500);
-                res.json({
-                    error: "se ha producido un error al eliminar la oferta"
-                })
-            } else {
-                res.status(200);
-                res.send(JSON.stringify(ofertas));
-            }
-        });
-    });
-
-    app.put("/api/oferta/:id", function (req, res) {
-
-        let usuario = res.usuario;
-
-        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-        let criterioOferta = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
-
-        let oferta = {}; // Solo los atributos a modificar
-
-        if (req.body.titulo != null) {
-            if (req.body.titulo.length >= 3)
-                oferta.titulo = req.body.titulo;
-            else {
-                res.status(403);
-                res.json({
-                    error: "el título debe tener al menos 3 caracteres"
-                })
-            }
-        }
-
-        if (req.body.detalles != null) {
-            if (req.body.detalles.length >= 3) {
-                oferta.detalles = req.body.detalles;
-            } else {
-                res.status(403);
-                res.json({
-                    error: "los detalles deben tener al menos 3 caracteres"
-                })
-            }
-
-        }
-
-        if (req.body.precio != null) {
-            if (req.body.precio > 0) {
-                oferta.precio = req.body.precio;
-            } else {
-                res.status(403);
-                res.json({
-                    error: "el precio de la oferta debe ser mayor que 0"
-                })
-            }
-        }
-
-        gestorBD.obtenerOfertas(criterioOferta, function (ofertas) {
-            if (ofertas == null || ofertas[0].autor !== usuario) {
-                res.status(403);
-                res.json({
-                    error: "se ha producido un error"
-                })
-            } else {
-                gestorBD.modificarOferta(criterio, oferta, function (result) {
-                    if (result == null) {
-                        res.status(500);
-                        res.json({
-                            error: "se ha producido un error al modificar la oferta"
-                        })
-                    } else {
-                        res.status(200);
-                        res.json({
-                            mensaje: "oferta modificada",
-                            _id: req.params.id
-                        })
-                    }
-                });
-            }
-        });
-    });
-
-    app.post("/api/oferta", function (req, res) {
-
-        let oferta = {};
-
-        if (req.body.titulo != null) {
-            if (req.body.titulo.length >= 3)
-                oferta.titulo = req.body.titulo;
-            else {
-                res.status(403);
-                res.json({
-                    error: "el nombre debe tener al menos 3 caracteres"
-                })
-            }
-        }
-
-        if (req.body.detalles != null) {
-            if (req.body.detalles.length >= 3) {
-                oferta.detalles = req.body.detalles;
-            } else {
-                res.status(403);
-                res.json({
-                    error: "el género debe tener al menos 3 caracteres"
-                })
-            }
-
-        }
-
-        if (req.body.precio != null) {
-            if (req.body.precio > 0) {
-                oferta.precio = req.body.precio;
-            } else {
-                res.status(403);
-                res.json({
-                    error: "el precio de la oferta debe ser mayor que 0"
-                })
-            }
-        }
-
-        gestorBD.insertarOferta(oferta, function (id) {
-            if (id == null) {
-                res.status(500);
-                res.json({
-                    error: "se ha producido un error"
-                })
-            } else {
-                res.status(201);
-                res.json({
-                    mensaje: "oferta insertada",
-                    _id: id
-                })
-            }
-        });
-    });
-
     /*
         Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje, el mensaje
         que quieres enviar, y en caso de ser el propietario de la oferta, el receptor al que le llegará el mensaje.
@@ -303,7 +158,7 @@ module.exports = function (app, gestorBD) {
                             error: "debes indicar el receptor al que quieres enviar el mensaje"
                         })
                     } else {
-                        let criterioOferta = { "emisor": req.body.receptor, "oferta": req.body.oferta }
+                        let criterioOferta = {"emisor": req.body.receptor, "oferta": req.body.oferta}
 
                         gestorBD.obtenerComentarios(criterioOferta, function (comentarios) {
                             if (comentarios[0] == null) {
@@ -372,7 +227,7 @@ module.exports = function (app, gestorBD) {
         Método que pone en leído un mensaje que le pasas por el cuerpo
     */
     app.post("/api/mensaje/leer", function (req, res) {
-        let criterio = { "_id": gestorBD.mongo.ObjectID(req.body.mensaje) }
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.body.mensaje)}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
             if (comentarios[0] == null) {

@@ -32,6 +32,61 @@ module.exports = function (app, gestorBD) {
         });
     });
 
+    /*
+        Método que devuelve la conversación que tuviste con el propietario de una oferta que pasas por parámetro si eres el interesado,
+        si eres el propietario de la oferta, deberás elegir la persona con la que tuviste la conversación y pasarla por la URL
+    */
+    app.get("/api/conversacion/:id", function (req, res) {
+        let criterioOferta = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+
+        gestorBD.obtenerOfertas(criterioOferta, function (ofertas) {
+            if (ofertas[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al buscar la oferta"
+                })
+            } else {
+                if (res.usuario === ofertas[0].autor) {
+                    if (req.query.usuario == null) {
+                        res.status(500);
+                        res.json({
+                            error: "al ser el propietario de la oferta, debes indicar el usuario de la conversación que quieres sacar"
+                        })
+                    } else {
+                        let criterio = { "oferta": ofertas[0]._id.toString(), $or: [ { "emisor": ofertas[0].autor, "receptor": req.query.usuario }, { "emisor": req.query.usuario, "receptor": ofertas[0].autor }] }
+
+                        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+                            if (comentarios[0] == null) {
+                                res.status(500);
+                                res.json({
+                                    error: "se ha producido un error al recuperar los comentarios"
+                                })
+                            } else {
+                                res.status(200);
+                                res.send(JSON.stringify(comentarios));
+                            }
+                        })
+                    }
+
+                } else {
+                    let criterio = { "oferta": ofertas[0]._id.toString(), $or: [ { "emisor": ofertas[0].autor, "receptor": res.usuario }, { "emisor": res.usuario, "receptor": ofertas[0].autor }] }
+
+                    gestorBD.obtenerComentarios(criterio, function (comentarios) {
+                        if (comentarios[0] == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al recuperar los comentarios"
+                            })
+                        } else {
+                            res.status(200);
+                            res.send(JSON.stringify(comentarios));
+                        }
+                    })
+                }
+            }
+        })
+    });
+
     app.delete("/api/oferta/:id", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
@@ -262,21 +317,6 @@ module.exports = function (app, gestorBD) {
             }
         });
 
-    });
-
-    app.get("/api/conversacion/:id", function (req, res) {
-
-        let criterio = {
-            oferta: req.params.id,
-            interesado: res.usuario
-        }
-
-        gestorBD.obtenerComentarios(criterio, function (comentarios) {
-            res.status(200);
-            res.json({
-                comentarios: comentarios,
-            })
-        })
     });
 
     app.post("/api/autenticar", function (req, res) {

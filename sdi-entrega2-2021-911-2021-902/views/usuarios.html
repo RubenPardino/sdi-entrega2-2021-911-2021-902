@@ -18,23 +18,23 @@
             </thead>
             <tbody>
             {% for usuario in param %}
-                {% if usuario.rol !==0 %}
-                    <tr>
-                        <td>{{ usuario.nombre }}</td>
-                        <td>{{ usuario.apellidos }}</td>
-                        <td>{{ usuario.email }}</td>
-                        <td>
-                            <input type="checkbox" onchange="manageList('{{ usuario._id.toString() }}')"/>
-                        </td>
-                    </tr>
-                {% endif %}
+            {% if usuario.rol !==0 %}
+            <tr>
+                <td>{{ usuario.nombre }}</td>
+                <td>{{ usuario.apellidos }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>
+                    <input type="checkbox" onchange="manageList('{{ usuario._id.toString() }}')"/>
+                </td>
+            </tr>
+            {% endif %}
             {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
 
-<button onclick="removeChecked()">Eliminar</button>
+<button onclick="removeChecked()" class="btn btn-primary">Eliminar</button>
 
 <script>
 
@@ -43,16 +43,15 @@
     function manageList(user) {
         if (eliminados.includes(user)) {
             var i = eliminados.indexOf(user);
-            eliminados.splice(i,1);
-        }
-        else {
+            eliminados.splice(i, 1);
+        } else {
             eliminados.push(user);
         }
     }
 
     function removeChecked() {
         for (let user of eliminados) {
-            $.get("/usuario/eliminar/"+user);
+            $.get("/usuario/eliminar/" + user);
         }
         eliminados.splice(0, eliminados.length)
         location.reload();

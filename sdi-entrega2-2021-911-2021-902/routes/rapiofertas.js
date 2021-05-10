@@ -368,6 +368,47 @@ module.exports = function (app, gestorBD) {
 
     });
 
+    /*
+        Método que pone en leído un mensaje que le pasas por el cuerpo
+    */
+    app.post("/api/mensaje/leer", function (req, res) {
+        let criterio = { "_id": gestorBD.mongo.ObjectID(req.body.mensaje) }
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            if (comentarios[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar el comentario"
+                })
+            } else {
+                if (res.usuario === comentarios[0].receptor || res.usuario === comentarios[0].emisor) {
+                    comentarios[0].leido = true;
+
+                    gestorBD.modificarMensaje(criterio, comentarios[0], function (result) {
+                        if (result == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al marcar el mensaje como leído"
+                            })
+                        } else {
+                            res.status(200);
+                            res.json({
+                                mensaje: "mensaje marcado como leído",
+                                _id: req.params.id
+                            })
+                        }
+                    })
+                } else {
+                    res.status(500);
+                    res.json({
+                        error: "no puedes modificar un mensaje que no es tuyo"
+                    })
+                }
+            }
+        })
+
+    })
+
     app.post("/api/autenticar", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex')
 

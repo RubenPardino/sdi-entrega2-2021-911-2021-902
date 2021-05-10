@@ -45,7 +45,7 @@ public class SdiEntrega2Tests {
 	static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 
 	static WebDriver driver = getDriver(PathFirefox65, Geckdriver024);
-	static String URL = "https://192.168.0.10:8081";
+	static String URL = "https://localhost:8081";
 
 	public static WebDriver getDriver(String PathFirefox, String Geckdriver) {
 		System.setProperty("webdriver.firefox.bin", PathFirefox);
@@ -223,7 +223,9 @@ public class SdiEntrega2Tests {
 		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
-	// PR13. Sin hacer /
+	// PR13. Ir a la lista de usuarios, borrar el último usuario de la lista,
+	// comprobar que la lista se
+	// actualiza y dicho usuario desaparece
 	@Test
 	public void PR13() {
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
@@ -245,10 +247,31 @@ public class SdiEntrega2Tests {
 		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
-	// PR14. Sin hacer /
+	// PR14. Ir a la lista de usuarios, borrar 3 usuarios, comprobar que la lista se
+	// actualiza y dichos
+	// usuarios desaparecen.
 	@Test
 	public void PR14() {
-		assertTrue("PR14 sin hacer", false);
+		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
+		// Rellenamos el formulario.
+		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
+		List<WebElement> elementos = PO_View.checkElement(driver, "free",
+				"/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementosAnt = elementos.size();
+
+		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
+		elementos.get(0).click();
+		elementos.get(1).click();
+		elementos.get(2).click();
+
+		By boton = By.className("btn");
+		driver.findElement(boton).click();
+
+		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
+		int numElementos = elementos.size();
+
+		SeleniumUtils.esperarSegundos(driver, 10);
+		assertEquals(numElementosAnt - 3, numElementos);
 	}
 
 	// PR15. Crear una nueva oferta válida /
@@ -478,16 +501,41 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "Saldo insuficiente para destacar la oferta");
 	}
 
-	// PR030. Sin hacer /
+	// PR030. Inicio de sesión con datos válidos
 	@Test
 	public void PR30() {
-		assertTrue("PR30 sin hacer", false);
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "j@gmail.com", "1234");
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Password:", 2);
+
 	}
 
-	// PR031. Sin hacer /
+	// PR031. Inicio de sesión con datos inválidos (email existente, pero contraseña incorrecta).
 	@Test
 	public void PR31() {
-		assertTrue("PR31 sin hacer", false);
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "j@gmail.com", "12345");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+
+	}
+
+	// PR032. Inicio de sesión con datos válidos (campo email o contraseña vacíos).
+	@Test
+	public void PR32() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "", "12345");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+		
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "j@gmail.com", "");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+	}
+
+	// PR033. Mostrar el listado de ofertas disponibles y comprobar que se muestran todas las que
+	//existen, menos las del usuario identificado.
+	@Test
+	public void PR33() {
+		assertTrue("PR33 sin hacer", false);
 	}
 
 }

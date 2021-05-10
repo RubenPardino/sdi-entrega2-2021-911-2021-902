@@ -8,7 +8,6 @@
             <th>Fecha</th>
 
 
-
         </tr>
         </thead>
         <tbody id="tablaCuerpo">
@@ -54,7 +53,8 @@
         });
     }
 
-    var ofertas;
+    var mensajes;
+    var nmensajes = 0;
 
     function cargarMensajes() {
         $.ajax({
@@ -64,8 +64,11 @@
             dataType: 'json',
             headers: {"token": token},
             success: function (respuesta) {
-                ofertas = respuesta;
-                actualizarTabla(ofertas);
+                mensajes = respuesta;
+                if (mensajes.length > nmensajes) {
+                    nmensajes = mensajes.length;
+                    actualizarTabla(mensajes);
+                }
             },
             error: function (error) {
                 $("#contenedor-principal").load("widget-login.html");
@@ -87,6 +90,6 @@
         }
     }
 
-    cargarMensajes();
+    setInterval(cargarMensajes, 1000);
 
 </script>

@@ -81,7 +81,7 @@
                 "<td>" + mensajesMostrar[i].mensaje + "</td>" +
                 "<td>" + mensajesMostrar[i].emisor + "</td>" +
                 "<td>" + mensajesMostrar[i].receptor + "</td>" +
-                "<td>" + mensajesMostrar[i].fecha + "</td>" +
+                "<td>" + new Date(mensajesMostrar[i].fecha).toUTCString() + "</td>" +
                 "</td>" +
                 "</tr>");
         }

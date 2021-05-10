@@ -87,6 +87,55 @@ module.exports = function (app, gestorBD) {
         })
     });
 
+    /*
+        Método que devuelve todas las conversaciones de un usuario identificado
+    */
+    app.get("/api/conversaciones", function (req, res) {
+        let criterio = { $or: [ { "emisor": res.usuario }, { "receptor": res.usuario } ] }
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            if (comentarios[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar los comentarios"
+                })
+            } else {
+                let comentariosPropietario = [];
+                let comentariosInteresado = [];
+
+                let i = 1;
+
+                for (let comentario of comentarios) {
+                    let criterioOferta = { "_id": gestorBD.mongo.ObjectID(comentario.oferta) }
+
+                    gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
+                        if (oferta == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al comprobar las ofertas de los comentarios"
+                            })
+                        } else {
+                            i++;
+                            if (oferta[0].autor === res.usuario) {
+                                comentariosPropietario.push(comentario);
+                            } else {
+                                comentariosInteresado.push(comentario);
+                            }
+
+                            if (i === comentarios.length) {
+                                res.status(200);
+                                res.send({
+                                    "Conversaciones como propietario": JSON.stringify(comentariosPropietario),
+                                    "Conversaciones como interesado": JSON.stringify(comentariosInteresado)
+                                });
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    })
+
     app.delete("/api/oferta/:id", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}

@@ -70,6 +70,8 @@ routerUsuarioToken.use(function (req, res, next) {
 app.use('/api/ofertas', routerUsuarioToken);
 app.use('/api/mensaje', routerUsuarioToken);
 app.use('/api/conversacion', routerUsuarioToken);
+app.use('/api/conversaciones', routerUsuarioToken);
+app.use('/api/mensaje/leer', routerUsuarioToken);
 
 let gestorBD = require("./modules/gestorBD.js");
 gestorBD.init(app, mongo);

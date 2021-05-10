@@ -50,7 +50,6 @@
 		</thead>
 		<tbody>
 		{% for oferta in param.ofertasDestacadas %}
-			{% if session.usuario !== oferta.autor %}
 			<tr>
 				<td>{{ oferta.titulo }}</td>
 				<td>{{ oferta.precio }}</td>
@@ -58,7 +57,6 @@
 					<a href="/oferta/{{ oferta._id.toString() }}">Comprar</a> <br>
 				</td>
 			</tr>
-			{% endif %}
 		{% endfor %}
 		</tbody>
 	</table>

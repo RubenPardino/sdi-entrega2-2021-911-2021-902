@@ -37,9 +37,10 @@ module.exports = function(app, swig, gestorBD) {
                 res.send("Error al encontrar la oferta");
             } else {
                 let mensaje = {
-                    propietario: ofertas[0].autor,
-                    interesado: req.session.usuario,
+                    receptor: ofertas[0].autor,
+                    emisor: req.session.usuario,
                     oferta: req.params.oferta_id,
+                    fecha: Date.now(),
                     mensaje: req.body.texto,
                     leido: false
                 }

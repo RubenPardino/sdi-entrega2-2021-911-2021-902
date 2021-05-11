@@ -51,6 +51,7 @@
                 "<td>" + ofertasMostrar.oferta[i][0].titulo + "</td>" +
                 "<td>" + ofertasMostrar.interesado[i].receptor + "</td>" +
                 "<td onclick=mensaje('" + ofertasMostrar.interesado[i].oferta + "')><a> Mensaje </a></td>" +
+                "<td onclick=eliminar('" + ofertasMostrar.interesado[i]._id + "')><a> Eliminar </a></td>" +
                 "</td>" +
                 "</tr>");
         }
@@ -63,8 +64,8 @@
 
     function eliminar(_id) {
         $.ajax({
-            url: URLbase + "/oferta/" + _id,
-            type: "DELETE",
+            url: URLbase + "/chat/" + _id,
+            type: "POST",
             data: {},
             dataType: 'json',
             headers: {"token": token},

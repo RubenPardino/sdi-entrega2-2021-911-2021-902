@@ -100,7 +100,7 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 let collection = db.collection('comentarios');
-                collection.deleteOne(criterio, function (err, comentarios) {
+                collection.remove(criterio, function (err, comentarios) {
                     if (err) {
                         funcionCallback(null);
                     } else {

@@ -285,6 +285,7 @@ module.exports = function (app, swig, gestorBD) {
         if (destacada) {
             let saldoNuevo = req.session.saldo - 20;
 
+            console.log()
             if (saldoNuevo >= 0) {
                 isValid = true;
 
@@ -300,6 +301,8 @@ module.exports = function (app, swig, gestorBD) {
                         req.session.saldo = saldoNuevo;
                     }
                 });
+            } else {
+                res.redirect("/publicaciones?mensaje=No tienes suficiente dinero para crear la oferta como destacada");
             }
         }
 

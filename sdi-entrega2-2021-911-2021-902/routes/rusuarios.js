@@ -45,6 +45,7 @@ module.exports = function (app, swig, gestorBD) {
 
     app.get('/usuario/eliminar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
+
         gestorBD.eliminarUsuario(criterio, function (usuario) {
             if (usuario == null) {
                 res.redirect("/error" +

@@ -37,7 +37,7 @@ public class SdiEntrega2Tests {
 	// Común a Windows y a MACOSX
 
 	 static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
-	 static String Geckdriver024 = "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
+	 static String Geckdriver024 = "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 	//static String PathFirefox65 = "C:\\Users\\jk236\\Desktop\\ff\\firefox.exe";
 	//static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 
@@ -53,7 +53,6 @@ public class SdiEntrega2Tests {
 
 	@Before
 	public void setUp() {
-		driver.navigate().to(URL+"/bdreset");
 		driver.navigate().to(URL);
 	}
 
@@ -67,6 +66,7 @@ public class SdiEntrega2Tests {
 		// COnfiguramos las pruebas.
 		// Fijamos el timeout en cada opción de carga de una vista. 2 segundos.
 		PO_View.setTimeout(3);
+		driver.navigate().to(URL+"/bdreset");
 
 	}
 
@@ -200,6 +200,7 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "usuario3@gmail.com");
 		PO_View.checkElement(driver, "text", "test1@gmail.com");
 		PO_View.checkElement(driver, "text", "test2@gmail.com");
+		PO_View.checkElement(driver, "text", "destaca@gmail.com");
 		PO_View.checkElement(driver, "text", "testPrimerRegistro@gmail.com");
 	}
 
@@ -223,7 +224,7 @@ public class SdiEntrega2Tests {
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
 		int numElementos = elementos.size();
 
-		SeleniumUtils.esperarSegundos(driver, 10);
+		
 		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
@@ -247,7 +248,7 @@ public class SdiEntrega2Tests {
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
 		int numElementos = elementos.size();
 
-		SeleniumUtils.esperarSegundos(driver, 10);
+		
 		assertEquals(numElementosAnt - 1, numElementos);
 	}
 
@@ -274,7 +275,7 @@ public class SdiEntrega2Tests {
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
 		int numElementos = elementos.size();
 
-		SeleniumUtils.esperarSegundos(driver, 10);
+		
 		assertEquals(numElementosAnt - 3, numElementos);
 	}
 
@@ -381,7 +382,9 @@ public class SdiEntrega2Tests {
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Peluche");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Tienda");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Peluche");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Comprar");
 		elementos.get(0).click();
@@ -395,7 +398,9 @@ public class SdiEntrega2Tests {
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Coche");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Tienda");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Coche");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Comprar");
 		elementos.get(0).click();
@@ -409,7 +414,9 @@ public class SdiEntrega2Tests {
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Diamante");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Tienda");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Diamante");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Comprar");
 		elementos.get(0).click();
@@ -441,21 +448,21 @@ public class SdiEntrega2Tests {
 		// Vamos al formulario de login
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
-		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Publicaciones");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "€");
 		double saldoAnt = Double.valueOf(elementos.get(0).getText().split("-")[1].split("€")[0]);
 		elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/ofertas/agregar')]");
 		elementos.get(0).click();
-		PO_AddProductView.fillForm2(driver, "Camiseta", "camiseta azul de seda", "20");
-		elementos = PO_View.checkElement(driver, "text", "Camiseta");
+		PO_AddProductView.fillForm2(driver, "Pantalon", "pantalon vaquero", "20");
+		elementos = PO_View.checkElement(driver, "text", "Pantalon");
 		elementos = PO_View.checkElement(driver, "text", "€");
 		double saldo = Double.valueOf(elementos.get(0).getText().split("-")[1].split("€")[0]);
 		assertEquals(saldoAnt - 20, saldo, 0);
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div[3]/table/tbody/tr/td[1]");
 		String elemento = elementos.get(elementos.size() - 1).getText();
-		assertTrue(elemento.contains("Camiseta"));
+		assertTrue(elemento.contains("Pantalon"));
 	}
 
 	// PR028.Sobre el listado de ofertas de un usuario con más de 20 euros de saldo,
@@ -470,7 +477,7 @@ public class SdiEntrega2Tests {
 		// Vamos al formulario de login
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
-		PO_LoginView.fillForm(driver, "prueba10@test.com", "1234");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Publicaciones");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
@@ -501,10 +508,10 @@ public class SdiEntrega2Tests {
 		// Vamos al formulario de login
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
-		PO_LoginView.fillForm(driver, "saldo0@saldo0.com", "saldo0");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
 		List<WebElement> elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/ofertas/agregar')]");
 		elementos.get(0).click();
-		PO_AddProductView.fillForm(driver, "Camiseta", "camiseta azul de seda", "20");
+		PO_AddProductView.fillForm(driver, "Nodestaca", "detalles de nodestaca", "20");
 		elementos = PO_View.checkElement(driver, "free", "//a[contains(@href, '/oferta/destacar')]");
 		elementos.get(0).click();
 		PO_View.checkElement(driver, "text", "Saldo insuficiente para destacar la oferta");
@@ -514,7 +521,7 @@ public class SdiEntrega2Tests {
 	@Test
 	public void PR30() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-		PO_LoginView.fillForm(driver, "j@gmail.com", "1234");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
 		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Password:", 2);
 
 	}
@@ -523,21 +530,21 @@ public class SdiEntrega2Tests {
 	@Test
 	public void PR31() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-		PO_LoginView.fillForm(driver, "j@gmail.com", "12345");
-		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234567");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado");
 
 	}
 
-	// PR032. Inicio de sesión con datos válidos (campo email o contraseña vacíos).
+	// PR032. Inicio de sesión con datos inválidos (campo email o contraseña vacíos).
 	@Test
 	public void PR32() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "", "12345");
-		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado");
 		
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "j@gmail.com", "");
-		PO_View.checkElement(driver, "text", "Usuario no encontrado\n");
+		PO_View.checkElement(driver, "text", "Usuario no encontrado");
 	}
 
 	// PR033. Mostrar el listado de ofertas disponibles y comprobar que se muestran todas las que

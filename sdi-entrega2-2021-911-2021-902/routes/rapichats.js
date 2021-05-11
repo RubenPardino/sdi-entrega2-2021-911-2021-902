@@ -116,6 +116,9 @@ module.exports = function (app, gestorBD) {
         })
     })
 
+    /*
+        Método que devuelve las conversaciones iniciadas
+    */
     app.get("/api/conversaciones/iniciadas", function (req, res) {
         let criterio = {$or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
 
@@ -265,6 +268,9 @@ module.exports = function (app, gestorBD) {
 
     });
 
+    /*
+        Método que borra el char que le pasas como parámetro
+    */
     app.post("/api/chat/:id", function (req, res) {
 
         let criterio = { "_id":  gestorBD.mongo.ObjectID(req.params.id) }

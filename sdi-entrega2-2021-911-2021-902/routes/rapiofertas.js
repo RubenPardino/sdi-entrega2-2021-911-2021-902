@@ -1,5 +1,8 @@
 module.exports = function (app, gestorBD) {
 
+    /*
+        Método de la api que manda en forma de json las ofertas que hay en la base de datos
+    */
     app.get("/api/ofertas", function (req, res) {
         gestorBD.obtenerOfertas({}, function (ofertas) {
             ofertas = ofertas.filter(n => n.autor !== res.usuario)
@@ -16,7 +19,9 @@ module.exports = function (app, gestorBD) {
         });
     });
 
-
+    /*
+        Método para autenticarse desde la api (crea un token cuando alguien se logea)
+    */
     app.post("/api/autenticar", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave')).update(req.body.password).digest('hex')
 

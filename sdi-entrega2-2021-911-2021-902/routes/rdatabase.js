@@ -1,4 +1,7 @@
 module.exports = function (app, gestorBD) {
+    /*
+        Método que reinicia la base de datos para los tests
+    */
     app.get("/bdreset", function (req, res) {
         gestorBD.borrarDatos(function (result) {
             if (result == null) {

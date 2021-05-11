@@ -6,14 +6,23 @@ module.exports = function (app, swig, gestorBD) {
         ANONIMO: 2
     }
 
+    /*
+        Método que te redirige a la vista de registro
+    */
     app.get("/registrarse", function (req, res) {
         res.send(app.get('returnVista')(req, 'bregistro.html', null));
     });
 
+    /*
+        Método que te redirige a la vista de logeo
+    */
     app.get("/identificarse", function (req, res) {
         res.send(app.get('returnVista')(req, 'bidentificacion.html', null));
     });
 
+    /*
+        Método para desconectarse de sesión que te redirige al método /identificarse
+    */
     app.get('/desconectarse', function (req, res) {
         req.session.usuario = null;
         req.session.saldo = null;
@@ -21,10 +30,16 @@ module.exports = function (app, swig, gestorBD) {
         res.redirect("/identificarse");
     });
 
+    /*
+        Método que te redirige a la página de error
+    */
     app.get('/error', function (req, res) {
         res.send(app.get('returnVista')(req, 'error.html', null));
     });
 
+    /*
+        Método que te redirige a la lista de usuarios (solo si eres administrador)
+    */
     app.get("/usuarios", function (req, res) {
 
         let criterio = {}
@@ -43,6 +58,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /*
+        Método que te elimina el usuario que tenga la id que se le pasa por parámetro
+    */
     app.get('/usuario/eliminar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
@@ -57,6 +75,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     })
 
+    /*
+        Método post que te registra en la base de datos y te logea directamente, redirigiendote a /publicaciones
+    */
     app.post('/usuario', function (req, res) {
         if (req.body.password !== req.body.password2)
             res.redirect("/error" +
@@ -113,6 +134,9 @@ module.exports = function (app, swig, gestorBD) {
         }
     });
 
+    /*
+        Método post que te identifica y te redirige, si eres administrador a /usuarios, y si no a /publicaciones
+    */
     app.post("/identificarse", function (req, res) {
         let seguro = app.get("crypto").createHmac('sha256', app.get('clave'))
             .update(req.body.password).digest('hex');

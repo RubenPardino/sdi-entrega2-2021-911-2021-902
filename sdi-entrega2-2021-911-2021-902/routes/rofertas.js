@@ -1,9 +1,15 @@
 module.exports = function (app, swig, gestorBD) {
 
+    /*
+        Método que te redirige a la vista para agregar ofertas
+    */
     app.get('/ofertas/agregar', function (req, res) {
         res.send(app.get('returnVista')(req, 'bagregar.html', null));
     })
 
+    /*
+        Método que elimina la oferta que tenga como id la que le pases por parámetro y te redirige a /publicaciones
+    */
     app.get('/oferta/eliminar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.eliminarOferta(criterio, function (ofertas) {
@@ -17,6 +23,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     })
 
+    /*
+        Método que te asigna como comprada la oferta que le pasas como pàrámetro (si la puedes comprar), y te redirige a /compras
+    */
     app.get('/oferta/comprar/:id', function (req, res) {
         let ofertaId = gestorBD.mongo.ObjectID(req.params.id);
         let compra = {
@@ -24,7 +33,7 @@ module.exports = function (app, swig, gestorBD) {
             ofertaId: ofertaId
         }
 
-        let usuarioOferta = {"usuario": req.session.usuario, "ofertaId": gestorBD.mongo.ObjectID(req.params.id)};
+        let usuarioOferta = {"ofertaId": gestorBD.mongo.ObjectID(req.params.id)};
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
 
@@ -66,7 +75,7 @@ module.exports = function (app, swig, gestorBD) {
                                     "&tipoMensaje=alert-danger ");
                             }
                         } else {
-                            res.send("Ya has comprado la oferta");
+                            res.send("La oferta ya ha sido comprada");
                         }
                     }
                 }
@@ -74,6 +83,9 @@ module.exports = function (app, swig, gestorBD) {
         })
     });
 
+    /*
+        Método que te redirige a la página de compras propias
+    */
     app.get('/compras', function (req, res) {
         let criterio = {"usuario": req.session.usuario};
 
@@ -94,6 +106,9 @@ module.exports = function (app, swig, gestorBD) {
         })
     });
 
+    /*
+        Método que te redirige a la página de modificar oferta
+    */
     app.get('/oferta/modificar/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         gestorBD.obtenerOfertas(criterio, function (ofertas) {
@@ -105,6 +120,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /*
+        Método que destaca la oferta que le pasas por parámetro y baja el dinero del usuario
+    */
     app.get('/oferta/destacar/:id', function (req, res) {
         let id = req.params.id;
         let criterio = {"_id": gestorBD.mongo.ObjectID(id)};
@@ -144,17 +162,9 @@ module.exports = function (app, swig, gestorBD) {
 
     });
 
-    app.get('/ofertas/:id', function (req, res) {
-        let respuesta = 'id: ' + req.params.id;
-        res.send(respuesta);
-    });
-
-    app.get('/canciones/:genero/:id', function (req, res) {
-        let respuesta = 'id: ' + req.params.id + '<br>'
-            + 'Género: ' + req.params.genero;
-        res.send(respuesta);
-    });
-
+    /*
+        Método que te redirige a la página principal de la tienda
+    */
     app.get("/tienda", function (req, res) {
         let criterio = {};
         if (req.query.busqueda != null) {
@@ -189,6 +199,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /*
+        Método que te redirige a la página de tus publicaciones
+    */
     app.get("/publicaciones", function (req, res) {
         let criterio = {autor: req.session.usuario};
         let criterioDestacadas = {destacada: true};
@@ -212,6 +225,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /*
+        Método que redirige a la página de una oferta para poder comprarla o verla en detalle
+    */
     app.get('/oferta/:id', function (req, res) {
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)};
         let criterioComentarios = {"oferta_id": req.params.id};
@@ -240,6 +256,9 @@ module.exports = function (app, swig, gestorBD) {
         });
     });
 
+    /*
+        Método que crea una nueva oferta y la mete en la base de datos, si es destacada, también baja 20€ al usuario
+    */
     app.post("/oferta", function (req, res) {
 
         let datetime = new Date();
@@ -247,7 +266,7 @@ module.exports = function (app, swig, gestorBD) {
 
         console.log(req.body.destacada);
 
-        if (req.body.destacada) {
+        if (req.body.destacada !== undefined) {
             destacada = true;
         }
 
@@ -295,6 +314,9 @@ module.exports = function (app, swig, gestorBD) {
         }
     });
 
+    /*
+        Método que modifica una oferta y la mete en la base de datos
+    */
     app.post('/oferta/modificar/:id', function (req, res) {
         let id = req.params.id;
         let criterio = {"_id": gestorBD.mongo.ObjectID(id)};

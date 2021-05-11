@@ -31,6 +31,8 @@
 </div>
 
 <script>
+    window.history.pushState("", "", "/cliente.html?w=mensaje");
+
     function agregarMensaje() {
         $.ajax({
             url: URLbase + "/mensaje",

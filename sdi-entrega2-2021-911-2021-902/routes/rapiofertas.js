@@ -37,7 +37,8 @@ module.exports = function (app, gestorBD) {
                             error: "al ser el propietario de la oferta, debes indicar el usuario de la conversación que quieres sacar"
                         })
                     } else {
-                        let criterio = {"oferta": ofertas[0]._id.toString(),
+                        let criterio = {
+                            "oferta": ofertas[0]._id.toString(),
                             $or: [{
                                 "emisor": ofertas[0].autor,
                                 "receptor": req.query.usuario
@@ -58,7 +59,8 @@ module.exports = function (app, gestorBD) {
                     }
 
                 } else {
-                    let criterio = {"oferta": ofertas[0]._id.toString(),
+                    let criterio = {
+                        "oferta": ofertas[0]._id.toString(),
                         $or: [{"emisor": ofertas[0].autor, "receptor": res.usuario}, {
                             "emisor": res.usuario,
                             "receptor": ofertas[0].autor
@@ -120,8 +122,8 @@ module.exports = function (app, gestorBD) {
                             if (i === comentarios.length) {
                                 res.status(200);
                                 res.send({
-                                    "Conversaciones como propietario": JSON.stringify(comentariosPropietario),
-                                    "Conversaciones como interesado": JSON.stringify(comentariosInteresado)
+                                    propietario: JSON.stringify(comentariosPropietario),
+                                    interesado: comentariosInteresado
                                 });
                             }
                         }
@@ -130,6 +132,56 @@ module.exports = function (app, gestorBD) {
             }
         })
     })
+
+    app.get("/api/conversaciones/iniciadas", function (req, res) {
+        let criterio = {$or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            if (comentarios[0] == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar los comentarios"
+                })
+            } else {
+                let comentariosPropietario = [];
+                let comentariosInteresado = [];
+                let offers = [];
+
+                let i = 1;
+
+                for (let comentario of comentarios) {
+                    let criterioOferta = {"_id": gestorBD.mongo.ObjectID(comentario.oferta)}
+
+                    gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
+                        if (oferta == null) {
+                            res.status(500);
+                            res.json({
+                                error: "se ha producido un error al comprobar las ofertas de los comentarios"
+                            })
+                        } else {
+                            i++;
+                            offers.push(oferta);
+                            if (oferta[0].autor === res.usuario) {
+                                comentariosPropietario.push(comentario);
+                            } else {
+                                comentariosInteresado.push(comentario);
+                            }
+
+                            if (i === comentarios.length) {
+                                res.status(200);
+                                res.send({
+                                    propietario: JSON.stringify(comentariosPropietario),
+                                    interesado: comentariosInteresado,
+                                    oferta: offers
+                                });
+                            }
+                        }
+                    })
+                }
+            }
+        })
+    })
+
 
     /*
         Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje, el mensaje

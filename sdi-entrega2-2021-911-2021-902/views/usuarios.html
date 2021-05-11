@@ -41,16 +41,19 @@
     var eliminados = [];
 
     function manageList(user) {
+        console.log(user)
         if (eliminados.includes(user)) {
             var i = eliminados.indexOf(user);
             eliminados.splice(i, 1);
         } else {
             eliminados.push(user);
+            console.log(eliminados)
         }
     }
 
     function removeChecked() {
         for (let user of eliminados) {
+            console.log(user);
             $.get("/usuario/eliminar/" + user);
         }
         eliminados.splice(0, eliminados.length)

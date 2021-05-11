@@ -266,7 +266,7 @@ module.exports = function (app, swig, gestorBD) {
 
         console.log(req.body.destacada);
 
-        if (req.body.destacada !== undefined) {
+        if (req.body.destacada) {
             destacada = true;
         }
 
@@ -284,8 +284,8 @@ module.exports = function (app, swig, gestorBD) {
 
         if (destacada) {
             let saldoNuevo = req.session.saldo - 20;
+            console.log(saldoNuevo);
 
-            console.log()
             if (saldoNuevo >= 0) {
                 isValid = true;
 

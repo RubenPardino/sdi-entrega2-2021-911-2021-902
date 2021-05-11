@@ -275,7 +275,7 @@ module.exports = function (app, gestorBD) {
     */
     app.post("/api/chat/:id", function (req, res) {
 
-        let criterio = { "_id":  gestorBD.mongo.ObjectID(req.params.id) }
+        let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
             if (comentarios == null) {
@@ -284,7 +284,12 @@ module.exports = function (app, gestorBD) {
                     error: "se ha producido un error al recuperar los comentario"
                 })
             } else {
-                let criterioBorrado = { "oferta": comentarios[0].oferta, $or: [ { "emisor": comentarios[0].emisor, "receptor": comentarios[0].receptor }, { "emisor": comentarios[0].receptor, "receptor": comentarios[0].emisor }] }
+                let criterioBorrado = {"oferta": comentarios[0].oferta,
+                    $or: [{
+                        "emisor": comentarios[0].emisor,
+                        "receptor": comentarios[0].receptor
+                    }, {"emisor": comentarios[0].receptor, "receptor": comentarios[0].emisor}]
+                }
 
                 gestorBD.borrarComentario(criterioBorrado, function (result) {
                     if (result == null) {
@@ -342,6 +347,51 @@ module.exports = function (app, gestorBD) {
                 }
             }
         })
+    })
+
+    /*
+        Método que pone en leído una conversación que le pasas por el cuerpo
+    */
+    app.post("/api/conversacion/leer", function (req, res) {
+        let criterio = {"oferta": gestorBD.mongo.ObjectID(req.body.oferta)}
+
+        gestorBD.obtenerComentarios(criterio, function (comentarios) {
+            console.log(comentarios)
+            if (comentarios == null) {
+                res.status(500);
+                res.json({
+                    error: "se ha producido un error al recuperar el comentario"
+                })
+            } else {
+                for (let comentario of comentarios) {
+                    if (res.usuario === comentario.receptor || res.usuario === comentario.emisor) {
+                        comentario.leido = true;
+                    } else {
+                        res.status(500);
+                        res.json({
+                            error: "no puedes modificar un mensaje que no es tuyo"
+                        })
+                    }
+                }
+                gestorBD.modificarMensaje(criterio, comentarios, function (result) {
+
+                    if (result == null) {
+                        res.status(500);
+                        res.json({
+                            error: "se ha producido un error al marcar el mensaje como leído"
+                        })
+                    } else {
+                        res.status(200);
+                        res.json({
+                            mensaje: "mensaje marcado como leído",
+                            _id: req.params.id
+                        })
+                    }
+                })
+            }
+        })
 
     })
+
+
 }

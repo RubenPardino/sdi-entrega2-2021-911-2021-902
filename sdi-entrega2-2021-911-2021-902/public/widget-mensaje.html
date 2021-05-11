@@ -79,6 +79,23 @@
     }
 
     function actualizarTabla(mensajesMostrar) {
+
+        $.ajax({
+            url: URLbase + "/conversacion/leer/",
+            type: "POST",
+            data: {oferta: idOfertaSeleccionada},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                console.log(respuesta);
+            },
+            error: function (error) {
+                console.log(error)
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+
+
         $("#tablaCuerpo").empty(); // Vaciar la tabla
         for (i = 0; i < mensajesMostrar.length; i++) {
             $("#tablaCuerpo").append(
@@ -92,6 +109,6 @@
         }
     }
 
-   intervalID =  setInterval(cargarMensajes, 1000);
+    intervalID = setInterval(cargarMensajes, 1000);
 
 </script>

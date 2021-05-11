@@ -21,6 +21,10 @@
 </div>
 
 <script>
+    let intervalID = null;
+    if (intervalID != null)
+        clearInterval(intervalID);
+
     window.history.pushState("", "", "/cliente.html?w=login");
 
     $("#boton-login").click(function () {

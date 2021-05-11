@@ -1,5 +1,5 @@
 <div id="widget-canciones">
-        <table class="table table-hover">
+    <table class="table table-hover">
         <thead>
         <tr>
             <th><a onclick="ordenarPorTitulo()">Título</a></th>
@@ -16,6 +16,9 @@
 </div>
 
 <script>
+    if (intervalID != null)
+        clearInterval(intervalID);
+
     window.history.pushState("", "", "/cliente.html?w=ofertas");
 
     var ofertas;

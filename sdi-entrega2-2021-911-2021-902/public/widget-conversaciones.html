@@ -14,6 +14,9 @@
 </div>
 
 <script>
+    if (intervalID != null)
+        clearInterval(intervalID);
+
     window.history.pushState("", "", "/cliente.html?w=conversaciones");
 
     var mensajes;
@@ -48,6 +51,7 @@
                 "<td>" + ofertasMostrar.oferta[i][0].titulo + "</td>" +
                 "<td>" + ofertasMostrar.interesado[i].receptor + "</td>" +
                 "<td onclick=mensaje('" + ofertasMostrar.interesado[i].oferta + "')><a> Mensaje </a></td>" +
+                "<a onclick=eliminar('" + ofertasMostrar[i]._id + "')>Eliminar</a><br>" +
                 "</td>" +
                 "</tr>");
         }
@@ -58,7 +62,28 @@
         $("#contenedor-principal").load("widget-mensaje.html");
     }
 
+    function eliminar(_id) {
+        $.ajax({
+            url: URLbase + "/oferta/" + _id,
+            type: "DELETE",
+            data: {},
+            dataType: 'json',
+            headers: {"token": token},
+            success: function (respuesta) {
+                console.log("Eliminada: " + _id);
+                $("#" + _id).remove(); // eliminar el <tr> de la oferta
+            },
+            error: function (error) {
+                console.log(error);
+                $("#contenedor-principal").load("widget-login.html");
+            }
+        });
+    }
+
+
+
     cargarMensajes();
+
 
 
 </script>

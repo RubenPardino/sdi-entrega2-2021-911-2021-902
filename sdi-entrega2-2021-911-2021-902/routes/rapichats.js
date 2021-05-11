@@ -353,7 +353,7 @@ module.exports = function (app, gestorBD) {
         Método que pone en leído una conversación que le pasas por el cuerpo
     */
     app.post("/api/conversacion/leer", function (req, res) {
-        let criterio = {"oferta": gestorBD.mongo.ObjectID(req.body.oferta)}
+        let criterio = {"oferta": req.body.oferta}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
             console.log(comentarios)
@@ -373,24 +373,23 @@ module.exports = function (app, gestorBD) {
                         })
                     }
                 }
-                gestorBD.modificarMensaje(criterio, comentarios, function (result) {
+                gestorBD.modificarConversacion(criterio, comentarios, function (result) {
 
                     if (result == null) {
                         res.status(500);
                         res.json({
-                            error: "se ha producido un error al marcar el mensaje como leído"
+                            error: "se ha producido un error al marcar la conversación como leída"
                         })
                     } else {
                         res.status(200);
                         res.json({
-                            mensaje: "mensaje marcado como leído",
+                            mensaje: "conversación marcada como leída",
                             _id: req.params.id
                         })
                     }
                 })
             }
         })
-
     })
 
 

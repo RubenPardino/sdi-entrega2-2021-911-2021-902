@@ -151,7 +151,7 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 let collection = db.collection('ofertas');
-                collection.insertOne(oferta, function (err, result) {
+                collection.insert(oferta, function (err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {
@@ -263,5 +263,18 @@ module.exports = {
                 });
             }
         });
+    },
+    borrarDatos: function (funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                db.collection('comentarios').drop();
+                db.collection('compras').drop();
+                db.collection('ofertas').drop();
+                db.collection('usuarios').drop();
+                funcionCallback(true);
+            }
+        })
     }
 };

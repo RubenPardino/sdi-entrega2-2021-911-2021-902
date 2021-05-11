@@ -16,7 +16,7 @@
                 <th class="col-md-1"></th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="tablaCuerpo">
             {% for usuario in param %}
             {% if usuario.rol !==0 %}
             <tr>
@@ -24,7 +24,7 @@
                 <td>{{ usuario.apellidos }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>
-                    <input type="checkbox" onchange="manageList('{{ usuario._id.toString() }}')"/>
+                    <input type="checkbox" name="checkbox" id="{{usuario._id.toString()}}"/>
                 </td>
             </tr>
             {% endif %}
@@ -34,28 +34,30 @@
     </div>
 </div>
 
-<button onclick="removeChecked()" class="btn btn-primary">Eliminar</button>
+<button id="btnEliminar" class="btn btn-primary">Eliminar</button>
 
 <script>
 
-    var eliminados = [];
-
-    function manageList(user) {
-        if (eliminados.includes(user)) {
-            var i = eliminados.indexOf(user);
-            eliminados.splice(i, 1);
-        } else {
-            eliminados.push(user);
+    $('#btnEliminar').on('click', function () {
+        console.log("hola");
+        let boxes = document.getElementsByName('checkbox');
+        for (i = 0; i < boxes.length; i++) {
+            if (boxes[i].checked) {
+                $.ajax({
+                    url: "https://localhost:8081/usuario/eliminar/" + boxes[i].id,
+                    data: {},
+                    dataType: 'json',
+                    success: function () {
+                        location.reload();
+                    },
+                    error: function (error) {
+                        location.reload();
+                        console.log(error);
+                    }
+                })
+            }
         }
-    }
-
-    function removeChecked() {
-        for (let user of eliminados) {
-            $.get("/usuario/eliminar/" + user);
-        }
-        eliminados.splice(0, eliminados.length)
-        location.reload();
-    }
+    })
 
 </script>
 

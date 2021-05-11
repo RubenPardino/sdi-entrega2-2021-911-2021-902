@@ -1,5 +1,5 @@
 module.exports = function (app, gestorBD) {
-    app.post("/bdreset", function (req, res) {
+    app.get("/bdreset", function (req, res) {
         gestorBD.borrarDatos(function (result) {
             if (result == null) {
                 res.send("Error al borrar los datos");
@@ -79,8 +79,28 @@ module.exports = function (app, gestorBD) {
                             saldo: 100,
                             rol: 1
                         }
+                        let usuario6 = {
+                            email: "destaca@gmail.com",
+                            password: seguro,
+                            nombre: "Destaca",
+                            apellidos: "Mucho",
+                            saldo: 59,
+                            rol: 1
+                        }
 
-                        let usuarios = [usuario0, usuario1, usuario2, usuario3, usuario4, usuario5];
+                        let seguroAdmin = app.get("crypto").createHmac('sha256', app.get('clave'))
+                            .update("admin").digest('hex');
+
+                        let admin = {
+                            email: "admin@email.com",
+                            password: seguroAdmin,
+                            nombre: "admin",
+                            apellidos: "admin",
+                            saldo: 100,
+                            rol: 0
+                        }
+
+                        let usuarios = [usuario0, usuario1, usuario2, usuario3, usuario4, usuario5, usuario6, admin];
 
                         gestorBD.insertarUsuario(usuarios, function (result2) {
                             if (result2 == null) {
@@ -124,7 +144,16 @@ module.exports = function (app, gestorBD) {
                                     destacada: false
                                 }
 
-                                let ofertas = [oferta0, oferta1, oferta2, oferta3];
+                                let oferta4 = {
+                                    titulo: "Destacado",
+                                    precio: 50,
+                                    detalles: "detalles del destacado",
+                                    fecha: "2021-05-07",
+                                    autor: "destaca@gmail.com",
+                                    destacada: false
+                                }
+
+                                let ofertas = [oferta0, oferta1, oferta2, oferta3, oferta4];
 
                                 gestorBD.insertarOferta(ofertas, function (result3) {
                                     if (result3 == null) {

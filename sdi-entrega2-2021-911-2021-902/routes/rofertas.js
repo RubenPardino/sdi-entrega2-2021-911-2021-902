@@ -245,7 +245,9 @@ module.exports = function (app, swig, gestorBD) {
         let datetime = new Date();
         let destacada = false;
 
-        if (req.body.destacada != null) {
+        console.log(req.body.destacada);
+
+        if (req.body.destacada) {
             destacada = true;
         }
 
@@ -258,6 +260,7 @@ module.exports = function (app, swig, gestorBD) {
             destacada: destacada
         }
 
+        console.log(destacada)
         let isValid = false;
 
         if (destacada) {

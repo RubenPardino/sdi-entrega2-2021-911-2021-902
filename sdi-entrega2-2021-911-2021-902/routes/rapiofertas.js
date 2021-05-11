@@ -146,10 +146,12 @@ module.exports = function (app, gestorBD) {
                 let comentariosPropietario = [];
                 let comentariosInteresado = [];
                 let offers = [];
+                let idscomentariosFiltrados = [];
 
                 let i = 1;
 
                 for (let comentario of comentarios) {
+
                     let criterioOferta = {"_id": gestorBD.mongo.ObjectID(comentario.oferta)}
 
                     gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
@@ -160,20 +162,24 @@ module.exports = function (app, gestorBD) {
                             })
                         } else {
                             i++;
-                            offers.push(oferta);
-                            if (oferta[0].autor === res.usuario) {
-                                comentariosPropietario.push(comentario);
-                            } else {
-                                comentariosInteresado.push(comentario);
-                            }
+                            if (!idscomentariosFiltrados.includes(comentario.oferta)) {
+                                idscomentariosFiltrados.push(comentario.oferta)
 
-                            if (i === comentarios.length) {
-                                res.status(200);
-                                res.send({
-                                    propietario: JSON.stringify(comentariosPropietario),
-                                    interesado: comentariosInteresado,
-                                    oferta: offers
-                                });
+                                offers.push(oferta);
+                                if (oferta[0].autor === res.usuario) {
+                                    comentariosPropietario.push(comentario);
+                                } else {
+                                    comentariosInteresado.push(comentario);
+                                }
+
+                                if (i === comentarios.length) {
+                                    res.status(200);
+                                    res.send({
+                                        propietario: JSON.stringify(comentariosPropietario),
+                                        interesado: comentariosInteresado,
+                                        oferta: offers
+                                    });
+                                }
                             }
                         }
                     })

@@ -1,4 +1,5 @@
 <div id="widget-canciones">
+    <h1>Chats iniciados</h1>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -39,13 +40,14 @@
         console.log(ofertasMostrar)
 
         $("#tablaCuerpo").empty(); // Vaciar la tabla
+        console.log(ofertasMostrar)
         for (i = 0; i < ofertasMostrar.interesado.length; i++) {
 
             $("#tablaCuerpo").append(
                 "<tr>" +
                 "<td>" + ofertasMostrar.oferta[i][0].titulo + "</td>" +
                 "<td>" + ofertasMostrar.interesado[i].receptor + "</td>" +
-                "<a onclick=mensaje('" + ofertasMostrar.interesado[i].oferta + "')>Mensaje</a>" +
+                "<td onclick=mensaje('" + ofertasMostrar.interesado[i].oferta + "')><a> Mensaje </a></td>" +
                 "</td>" +
                 "</tr>");
         }
@@ -57,7 +59,6 @@
     }
 
     cargarMensajes();
-
 
 
 </script>

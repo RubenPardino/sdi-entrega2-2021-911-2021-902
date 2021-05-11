@@ -214,7 +214,6 @@ public class SdiEntrega2Tests {
 		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
 		List<WebElement> elementos = PO_View.checkElement(driver, "free",
 				"/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementosAnt = elementos.size();
 
 		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
 		elementos.get(0).click();
@@ -222,10 +221,8 @@ public class SdiEntrega2Tests {
 		driver.findElement(boton).click();
 
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementos = elementos.size();
 
-		
-		assertEquals(numElementosAnt - 1, numElementos);
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "usuario0@gmail.com", PO_View.getTimeout());
 	}
 
 	// PR13. Ir a la lista de usuarios, borrar el último usuario de la lista,
@@ -238,7 +235,6 @@ public class SdiEntrega2Tests {
 		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
 		List<WebElement> elementos = PO_View.checkElement(driver, "free",
 				"/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementosAnt = elementos.size();
 
 		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
 		elementos.get(elementos.size() - 1).click();
@@ -246,10 +242,8 @@ public class SdiEntrega2Tests {
 		driver.findElement(boton).click();
 
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementos = elementos.size();
-
 		
-		assertEquals(numElementosAnt - 1, numElementos);
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "testPrimerRegistro@gmail.com", PO_View.getTimeout());
 	}
 
 	// PR14. Ir a la lista de usuarios, borrar 3 usuarios, comprobar que la lista se
@@ -262,7 +256,6 @@ public class SdiEntrega2Tests {
 		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
 		List<WebElement> elementos = PO_View.checkElement(driver, "free",
 				"/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementosAnt = elementos.size();
 
 		elementos = PO_View.checkElement(driver, "free", "//input[@type='checkbox']");
 		elementos.get(0).click();
@@ -273,10 +266,10 @@ public class SdiEntrega2Tests {
 		driver.findElement(boton).click();
 
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
-		int numElementos = elementos.size();
 
-		
-		assertEquals(numElementosAnt - 3, numElementos);
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "usuario1@gmail.com", PO_View.getTimeout());
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "usuario2@gmail.com", PO_View.getTimeout());
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "usuario3@gmail.com", PO_View.getTimeout());
 	}
 
 	// PR15. Crear una nueva oferta válida /

@@ -194,7 +194,7 @@ module.exports = function (app, swig, gestorBD) {
                     }
                 }
                 res.send(app.get('returnVista')(req, 'btienda.html', {
-                    ofertas: ofertas.filter(n => n.autor !== req.session.usuario),
+                    ofertas: ofertas,
                     paginas: paginas,
                     actual: pg
                 }));
@@ -243,7 +243,7 @@ module.exports = function (app, swig, gestorBD) {
                         res.send("Error al recuperar la oferta.");
                     } else {
                         if (req.session.usuario === ofertas[0].autor) {
-                            res.send("No puedes comprar tu propia oferta ");
+                            res.redirect("/tienda?mensaje=Esta oferta es tuya");
 
                         } else {
                             res.send(app.get('returnVista')(req, 'boferta.html', {

@@ -544,7 +544,44 @@ public class SdiEntrega2Tests {
 	//existen, menos las del usuario identificado.
 	@Test
 	public void PR33() {
-		assertTrue("PR33 sin hacer", false);
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		PO_View.checkElement(driver, "text", "Coche");
+		PO_View.checkElement(driver, "text", "Peluche");
+		PO_View.checkElement(driver, "text", "Diamante");
 	}
+	
+		// PR034. Mostrar el listado de ofertas disponibles, enviar un mensaje a una y comprobar que el mensaje aparece
+		@Test
+		public void PR34() {
+			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+			PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
+			elementos.get(0).click();
+			WebElement texto = driver.findElement(By.name("texto"));
+			texto.click();
+			texto.clear();
+			texto.sendKeys("prueba de comentario");
+			By boton = By.className("btn");
+			driver.findElement(boton).click();
+			PO_View.checkElement(driver, "text", "prueba de comentario");
+		}
+		
+		// PR035. Mostrar el listado de ofertas disponibles, comprobar que ya existe un mensaje en una oferta, enviar un mensaje y comprobar que el mensaje aparece
+		@Test
+		public void PR35() {
+			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+			PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
+			elementos.get(0).click();
+			PO_View.checkElement(driver, "text", "prueba de comentario");
+			WebElement texto = driver.findElement(By.name("texto"));
+			texto.click();
+			texto.clear();
+			texto.sendKeys("prueba de comentario en una conversación ya creada");
+			By boton = By.className("btn");
+			driver.findElement(boton).click();
+			PO_View.checkElement(driver, "text", "prueba de comentario en una conversación ya creada");
+		}
 
 }

@@ -24,6 +24,7 @@ module.exports = function (app, swig, gestorBD) {
         Método para desconectarse de sesión que te redirige al método /identificarse
     */
     app.get('/desconectarse', function (req, res) {
+        app.get('logger').debug("Desconectado usuario " + req.session.usuario);
         req.session.usuario = null;
         req.session.saldo = null;
         req.session.rol = rolEnum.ANONIMO;
@@ -49,6 +50,7 @@ module.exports = function (app, swig, gestorBD) {
                 req.session.usuario = null;
                 req.session.saldo = null;
                 req.session.rol = rolEnum.ANONIMO;
+                app.get('logger').debug("Error al recuperar los usuarios");
                 res.redirect("/error" +
                     "?mensaje=Error al obtener usuarios" +
                     "&tipoMensaje=alert-danger ");
@@ -66,10 +68,12 @@ module.exports = function (app, swig, gestorBD) {
 
         gestorBD.eliminarUsuario(criterio, function (usuario) {
             if (usuario == null) {
+                app.get('logger').debug("Error al eliminar el usuario");
                 res.redirect("/error" +
                     "?mensaje=No existe un usuario con esa id" +
                     "&tipoMensaje=alert-danger ");
             } else {
+                app.get('logger').debug("Eliminado usuario con id " + req.params.id);
                 res.redirect("/usuarios");
             }
         });
@@ -108,6 +112,7 @@ module.exports = function (app, swig, gestorBD) {
                                 "?mensaje=Error al registrar usuario" +
                                 "&tipoMensaje=alert-danger ");
                         } else {
+                            app.get('logger').debug("Usuario " + req.body.email + " registrado");
                             gestorBD.obtenerUsuarios(criterio, function (usuarios) {
                                 if (usuarios == null || usuarios.length == 0) {
                                     req.session.usuario = null;
@@ -117,6 +122,7 @@ module.exports = function (app, swig, gestorBD) {
                                         "?mensaje=Email o password incorrecto" +
                                         "&tipoMensaje=alert-danger ");
                                 } else {
+                                    app.get('logger').debug("Sesión iniciada, usuario: " + usuarios[0].email);
                                     req.session.usuario = usuarios[0].email;
                                     req.session.saldo = usuarios[0].saldo;
                                     req.session.rol = usuarios[0].rol;
@@ -156,6 +162,7 @@ module.exports = function (app, swig, gestorBD) {
                 req.session.usuario = usuarios[0].email;
                 req.session.saldo = usuarios[0].saldo;
                 req.session.rol = usuarios[0].rol;
+                app.get('logger').debug("Sesión iniciada, usuario: " + usuarios[0].email);
                 if (usuarios[0].email === "admin@email.com")
                     res.redirect("/usuarios")
                 else

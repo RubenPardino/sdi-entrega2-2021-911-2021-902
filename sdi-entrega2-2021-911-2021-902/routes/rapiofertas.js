@@ -37,6 +37,7 @@ module.exports = function (app, gestorBD) {
                     autenticado: false
                 })
             } else {
+                app.get('logger').debug("Usuario con email: " + req.body.email + ", autenticado");
                 let token = app.get('jwt').sign(
                     {usuario: criterio.email, tiempo: Date.now() / 1000},
                     "secreto");

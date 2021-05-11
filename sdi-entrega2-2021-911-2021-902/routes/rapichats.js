@@ -228,6 +228,7 @@ module.exports = function (app, gestorBD) {
                                             error: "se ha producido un error al enviar el mensaje"
                                         })
                                     } else {
+                                        app.get('logger').debug("Mensaje enviado de " + res.usuario + " a " + req.body.receptor);
                                         res.status(201);
                                         res.json({
                                             mensaje: "mensaje enviado",
@@ -255,6 +256,7 @@ module.exports = function (app, gestorBD) {
                                 error: "se ha producido un error al enviar el mensaje"
                             })
                         } else {
+                            app.get('logger').debug("Mensaje enviado de " + res.usuario + " a " + ofertas[0].autor)
                             res.status(201);
                             res.json({
                                 mensaje: "mensaje enviado",
@@ -269,7 +271,7 @@ module.exports = function (app, gestorBD) {
     });
 
     /*
-        Método que borra el char que le pasas como parámetro
+        Método que borra el chat que le pasas como parámetro
     */
     app.post("/api/chat/:id", function (req, res) {
 
@@ -291,6 +293,7 @@ module.exports = function (app, gestorBD) {
                             error: "se ha producido un error al borrar la conversación"
                         })
                     } else {
+                        app.get('logger').debug("Chat con id: " + req.params.id + ", borrado");
                         res.status(200);
                         res.json({
                             mensaje: "conversación eliminada"

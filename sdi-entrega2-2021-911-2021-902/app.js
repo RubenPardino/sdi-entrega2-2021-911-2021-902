@@ -20,6 +20,10 @@ app.set('jwt', jwt);
 let fs = require('fs');
 let https = require('https');
 
+let log4js = require("log4js");
+let logger = log4js.getLogger();
+logger.level = "debug";
+
 let expressSession = require('express-session');
 app.use(expressSession({
     secret: 'abcdefg',
@@ -79,12 +83,10 @@ gestorBD.init(app, mongo);
 // routerUsuarioSession
 var routerUsuarioSession = express.Router();
 routerUsuarioSession.use(function (req, res, next) {
-    console.log("routerUsuarioSession");
     if (req.session.usuario) {
         // dejamos correr la petición
         next();
     } else {
-        console.log("va a : " + req.session.destino)
         res.redirect("/identificarse");
     }
 });
@@ -98,12 +100,10 @@ app.use("/compras", routerUsuarioSession);
 //routerAdministrador
 var routerAdministrador = express.Router();
 routerAdministrador.use(function (req, res, next) {
-    console.log("routerAdministrador");
     if (req.session.rol === 0) {
         // dejamos correr la petición
         next();
     } else {
-        console.log("va a : " + req.session.destino)
         res.redirect("/error"+
             "?mensaje=Esta opción es solo para el administrador" +
             "&tipoMensaje=alert-danger ");
@@ -114,14 +114,12 @@ app.use("/usuarios", routerAdministrador);
 //routerUsuarioAutor
 let routerUsuarioAutor = express.Router();
 routerUsuarioAutor.use(function (req, res, next) {
-    console.log("routerUsuarioAutor");
     let path = require('path');
     let id = path.basename(req.originalUrl);
 // Cuidado porque req.params no funciona
 // en el router si los params van en la URL.
     gestorBD.obtenerOfertas(
         {_id: mongo.ObjectID(id)}, function (ofertas) {
-            console.log(ofertas[0]);
             if (ofertas[0].autor == req.session.usuario) {
                 next();
             } else {
@@ -141,6 +139,7 @@ app.set('port', 8081);
 app.set('db', 'mongodb://admin:sdi@tiendamusica-shard-00-00.2azzu.mongodb.net:27017,tiendamusica-shard-00-01.2azzu.mongodb.net:27017,tiendamusica-shard-00-02.2azzu.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-iulwxl-shard-0&authSource=admin&retryWrites=true&w=majority');
 app.set('clave', 'abcdefg');
 app.set('crypto', crypto);
+app.set('logger', logger);
 
 app.set('returnVista', function (req, vista, param) {
     let respuesta = swig.renderFile('views/'+vista,

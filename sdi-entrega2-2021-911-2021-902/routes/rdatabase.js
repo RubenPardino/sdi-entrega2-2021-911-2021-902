@@ -162,6 +162,7 @@ module.exports = function (app, gestorBD) {
                                     if (result3 == null) {
                                         res.send("Error al introducir datos");
                                     } else {
+                                        app.get('logger').debug("Base de datos reiniciada");
                                         res.send("Datos para test insertados");
                                     }
                                 })

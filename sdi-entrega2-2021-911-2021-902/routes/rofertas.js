@@ -18,6 +18,7 @@ module.exports = function (app, swig, gestorBD) {
                     "?mensaje=No existe la oferta" +
                     "&tipoMensaje=alert-danger ");
             } else {
+                app.get('logger').debug("Eliminada oferta con id: " + req.params.id);
                 res.redirect("/publicaciones");
             }
         });
@@ -62,6 +63,7 @@ module.exports = function (app, swig, gestorBD) {
                                             if (result == null) {
                                                 res.send("Error al comprar ");
                                             } else {
+                                                app.get('logger').debug("Oferta con id: " + req.params.id + " comprada por " + req.session.usuario);
                                                 req.session.saldo = saldoNuevo;
                                                 res.redirect("/compras");
                                             }
@@ -149,6 +151,7 @@ module.exports = function (app, swig, gestorBD) {
                         if (result == null) {
                             res.send("Error al destacar oferta");
                         } else {
+                            app.get('logger').debug("Oferta con id: " + req.params.id + ", destacada");
                             req.session.saldo = saldoNuevo;
                             res.redirect("/publicaciones?mensaje=Oferta destacada")
                         }
@@ -311,6 +314,7 @@ module.exports = function (app, swig, gestorBD) {
                 if (id == null) {
                     res.send("Error al insertar oferta");
                 } else {
+                    app.get('logger').debug("Oferta con título: " + req.body.titulo + ", creada");
                     res.redirect("/publicaciones?mensaje=Oferta insertada");
                 }
             });
@@ -334,6 +338,7 @@ module.exports = function (app, swig, gestorBD) {
             if (result == null) {
                 res.send("Error al modificar ");
             } else {
+                app.get('logger').debug("Oferta con id: " + req.params.id + ", modificada");
                 res.redirect("/publicaciones?mensaje=Oferta modificada");
             }
         });

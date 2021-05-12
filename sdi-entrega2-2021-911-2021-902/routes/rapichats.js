@@ -123,7 +123,7 @@ module.exports = function (app, gestorBD) {
         let criterio = {$or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
-            if (comentarios[0] == null) {
+            if (comentarios == null) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error al recuperar los comentarios"

@@ -309,7 +309,7 @@ module.exports = function (app, gestorBD) {
     /*
         Método que borra el chat que le pasas como parámetro
     */
-    app.post("/api/chat/:id", function (req, res) {
+    app.post("/api/conversacion/eliminar/:id", function (req, res) {
 
         let criterio = {"_id": gestorBD.mongo.ObjectID(req.params.id)}
 

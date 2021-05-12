@@ -10,7 +10,7 @@
             <p>{{ param.oferta.detalles }}</p>
             <p>{{ param.oferta.precio }} €</p>
             {% if param.comprado %}
-            <a class="btn btn-primary pull-right">Comprada</a>
+            <a class="btn btn-primary pull-right">Vendido</a>
             {% else %}
             <a class="btn btn-primary pull-right"
                href="/oferta/comprar/{{param.oferta._id.toString()}}">Comprar</a>

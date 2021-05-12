@@ -36,15 +36,13 @@ public class SdiEntrega2Tests {
 	// "/Users/delacal/Documents/SDI1718/firefox/geckodriver023mac";
 	// Común a Windows y a MACOSX
 
-//	static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
-	// static String Geckdriver024 =
-	// "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion
-	// 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
-	static String PathFirefox65 = "C:\\Users\\jk236\\Desktop\\ff\\firefox.exe";
-	static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
+	static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
+	static String Geckdriver024 ="C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
+	//static String PathFirefox65 = "C:\\Users\\jk236\\Desktop\\ff\\firefox.exe";
+	//static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 
 	static WebDriver driver = getDriver(PathFirefox65, Geckdriver024);
-	static String URL = "https://192.168.0.10:8081";
+	static String URL = "https://localhost:8081";
 
 	public static WebDriver getDriver(String PathFirefox, String Geckdriver) {
 		System.setProperty("webdriver.firefox.bin", PathFirefox);
@@ -608,6 +606,7 @@ public class SdiEntrega2Tests {
 	public void PR37() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		PO_View.checkElement(driver, "text", "Detalles");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Eliminar");
@@ -620,10 +619,11 @@ public class SdiEntrega2Tests {
 	public void PR38() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		PO_View.checkElement(driver, "text", "Detalles");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Eliminar");
-		elementos.get(elementos.size() - 1).click();
+		elementos.get(1).click();
 		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
 	}
 
@@ -636,27 +636,29 @@ public class SdiEntrega2Tests {
 	// leído
 	@Test
 	public void PR39() {
-		driver.navigate().to("https://192.168.0.10:8081/cliente.html?w=login");
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ofertas");
 		elementos.get(0).click();
 		elementos = PO_View.checkElement(driver, "text", "Mensaje");
 		elementos.get(0).click();
-		PO_ConversationView.fillForm(driver, "Test comentario ");
+		PO_ConversationView.fillForm(driver, "Test comentario");
 		PO_View.checkElement(driver, "text", "Test comentario");
 		elementos = PO_View.checkElement(driver, "text", "Desconectarse");
 		elementos.get(0).click();
 		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		PO_View.checkElement(driver, "text", "Detalles");
 		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
 		elementos.get(0).click();
-		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		elementos = PO_View.checkElement(driver, "free", "//*[@id=\"tablaCuerpoConversaciones\"]/tr[2]/td[3]");
 		assertTrue(elementos.get(0).toString() != "0");
-		elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos = PO_View.checkElement(driver, "free", "//*[@id=\"tablaCuerpoConversaciones\"]/tr[2]/td[4]");
 		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "Mensaje de prueba");
 		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
 		elementos.get(0).click();
-		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
-		assertTrue(elementos.get(0).toString() == "0");
+		elementos = PO_View.checkElement(driver, "free", "//*[@id=\"tablaCuerpoConversaciones\"]/tr[2]/td[3]");
+		assertTrue(elementos.get(0).getText().equals("0"));
 	}
 
 	// PR040. identificarse en la aplicación y enviar tres mensajes a una oferta,
@@ -666,7 +668,7 @@ public class SdiEntrega2Tests {
 	// validar que el número de mensajes sin leer aparece en su oferta
 	@Test
 	public void PR40() {
-		driver.navigate().to("https://192.168.0.10:8081/cliente.html?w=login");
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
 		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ofertas");
 		elementos.get(0).click();
@@ -682,11 +684,12 @@ public class SdiEntrega2Tests {
 
 		elementos = PO_View.checkElement(driver, "text", "Desconectarse");
 		elementos.get(0).click();
-		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		PO_LoginView.fillForm(driver, "test1@gmail.com", "1234");
+		PO_View.checkElement(driver, "text", "Detalles");
 		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
 		elementos.get(0).click();
-		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
-		assertTrue(elementos.get(0).toString() == "3");
+		elementos = PO_View.checkElement(driver, "free", "//*[@id=\"tablaCuerpoConversaciones\"]/tr[1]/td[3]");
+		assertTrue(elementos.get(0).getText().equals("4"));
 	}
 
 }

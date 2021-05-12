@@ -36,13 +36,15 @@ public class SdiEntrega2Tests {
 	// "/Users/delacal/Documents/SDI1718/firefox/geckodriver023mac";
 	// Común a Windows y a MACOSX
 
-	 static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
-	 static String Geckdriver024 = "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
-	//static String PathFirefox65 = "C:\\Users\\jk236\\Desktop\\ff\\firefox.exe";
-	//static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
+//	static String PathFirefox65 = "C:\\Program Files\\Mozilla Firefox\\firefox.exe";
+	// static String Geckdriver024 =
+	// "C:\\Users\\pardi\\OneDrive\\Escritorio\\SDI\\Sesion
+	// 5\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
+	static String PathFirefox65 = "C:\\Users\\jk236\\Desktop\\ff\\firefox.exe";
+	static String Geckdriver024 = "C:\\Users\\jk236\\Downloads\\PL-SDI-Sesión5-material\\PL-SDI-Sesión5-material\\geckodriver024win64.exe";
 
 	static WebDriver driver = getDriver(PathFirefox65, Geckdriver024);
-	static String URL = "https://localhost:8081";
+	static String URL = "https://192.168.0.10:8081";
 
 	public static WebDriver getDriver(String PathFirefox, String Geckdriver) {
 		System.setProperty("webdriver.firefox.bin", PathFirefox);
@@ -66,7 +68,7 @@ public class SdiEntrega2Tests {
 		// COnfiguramos las pruebas.
 		// Fijamos el timeout en cada opción de carga de una vista. 2 segundos.
 		PO_View.setTimeout(3);
-		driver.navigate().to(URL+"/bdreset");
+		driver.navigate().to(URL + "/bdreset");
 
 	}
 
@@ -193,7 +195,7 @@ public class SdiEntrega2Tests {
 		PO_HomeView.clickOption(driver, "identificarse", "class", "btn btn-primary");
 		// Rellenamos el formulario.
 		PO_LoginView.fillForm(driver, "admin@email.com", "admin");
-		
+
 		PO_View.checkElement(driver, "text", "usuario0@gmail.com");
 		PO_View.checkElement(driver, "text", "usuario1@gmail.com");
 		PO_View.checkElement(driver, "text", "usuario2@gmail.com");
@@ -242,7 +244,7 @@ public class SdiEntrega2Tests {
 		driver.findElement(boton).click();
 
 		elementos = PO_View.checkElement(driver, "free", "/html/body/div/div/div/table/tbody/tr/td[1]");
-		
+
 		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "testPrimerRegistro@gmail.com", PO_View.getTimeout());
 	}
 
@@ -518,7 +520,8 @@ public class SdiEntrega2Tests {
 
 	}
 
-	// PR031. Inicio de sesión con datos inválidos (email existente, pero contraseña incorrecta).
+	// PR031. Inicio de sesión con datos inválidos (email existente, pero contraseña
+	// incorrecta).
 	@Test
 	public void PR31() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
@@ -527,20 +530,22 @@ public class SdiEntrega2Tests {
 
 	}
 
-	// PR032. Inicio de sesión con datos inválidos (campo email o contraseña vacíos).
+	// PR032. Inicio de sesión con datos inválidos (campo email o contraseña
+	// vacíos).
 	@Test
 	public void PR32() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "", "12345");
 		PO_View.checkElement(driver, "text", "Usuario no encontrado");
-		
+
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "j@gmail.com", "");
 		PO_View.checkElement(driver, "text", "Usuario no encontrado");
 	}
 
-	// PR033. Mostrar el listado de ofertas disponibles y comprobar que se muestran todas las que
-	//existen, menos las del usuario identificado.
+	// PR033. Mostrar el listado de ofertas disponibles y comprobar que se muestran
+	// todas las que
+	// existen, menos las del usuario identificado.
 	@Test
 	public void PR33() {
 		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
@@ -549,74 +554,125 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "Peluche");
 		PO_View.checkElement(driver, "text", "Diamante");
 	}
-	
-		// PR034. Mostrar el listado de ofertas disponibles, enviar un mensaje a una y comprobar que el mensaje aparece
-		@Test
-		public void PR34() {
-			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-			PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
-			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
-			elementos.get(0).click();
-			WebElement texto = driver.findElement(By.name("texto"));
-			texto.click();
-			texto.clear();
-			texto.sendKeys("prueba de comentario");
-			By boton = By.className("btn");
-			driver.findElement(boton).click();
-			PO_View.checkElement(driver, "text", "prueba de comentario");
-		}
-		
-		// PR035. Mostrar el listado de ofertas disponibles, comprobar que ya existe un mensaje en una oferta, enviar un mensaje y comprobar que el mensaje aparece
-		@Test
-		public void PR35() {
-			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-			PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
-			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
-			elementos.get(0).click();
-			PO_View.checkElement(driver, "text", "prueba de comentario");
-			WebElement texto = driver.findElement(By.name("texto"));
-			texto.click();
-			texto.clear();
-			texto.sendKeys("prueba de comentario en una conversación ya creada");
-			By boton = By.className("btn");
-			driver.findElement(boton).click();
-			PO_View.checkElement(driver, "text", "prueba de comentario en una conversación ya creada");
-		}
-		
-		// PR036. Mostrar el listado de conversaciones abiertas y comprobar que están todas
-		@Test
-		public void PR36() {
-			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
-			elementos.get(0).click();
-			PO_View.checkElement(driver, "text", "Diamante");
-			PO_View.checkElement(driver, "text", "Destacado");
-			PO_View.checkElement(driver, "text", "Comenta");
-		}
-		
-		// PR037. Mostrar el listado de conversaciones abiertas y eliminar la primera
-		@Test
-		public void PR37() {
-			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
-			elementos.get(0).click();
-			elementos = PO_View.checkElement(driver, "text", "Eliminar");
-			elementos.get(0).click();
-			SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Diamante:", 2);
-		}
-		
-		// PR038. Mostrar el listado de conversaciones abiertas y eliminar la última
-		@Test
-		public void PR38() {
-			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
-			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
-			elementos.get(0).click();
-			elementos = PO_View.checkElement(driver, "text", "Eliminar");
-			elementos.get(elementos.size()-1).click();
-			SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
-		}
+
+	// PR034. Mostrar el listado de ofertas disponibles, enviar un mensaje a una y
+	// comprobar que el mensaje aparece
+	@Test
+	public void PR34() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos.get(0).click();
+		WebElement texto = driver.findElement(By.name("texto"));
+		texto.click();
+		texto.clear();
+		texto.sendKeys("prueba de comentario");
+		By boton = By.className("btn");
+		driver.findElement(boton).click();
+		PO_View.checkElement(driver, "text", "prueba de comentario");
+	}
+
+	// PR035. Mostrar el listado de ofertas disponibles, comprobar que ya existe un
+	// mensaje en una oferta, enviar un mensaje y comprobar que el mensaje aparece
+	@Test
+	public void PR35() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "prueba de comentario");
+		WebElement texto = driver.findElement(By.name("texto"));
+		texto.click();
+		texto.clear();
+		texto.sendKeys("prueba de comentario en una conversación ya creada");
+		By boton = By.className("btn");
+		driver.findElement(boton).click();
+		PO_View.checkElement(driver, "text", "prueba de comentario en una conversación ya creada");
+	}
+
+	// PR036. Mostrar el listado de conversaciones abiertas y comprobar que están
+	// todas
+	@Test
+	public void PR36() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		PO_View.checkElement(driver, "text", "Diamante");
+		PO_View.checkElement(driver, "text", "Destacado");
+		PO_View.checkElement(driver, "text", "Comenta");
+	}
+
+	// PR037. Mostrar el listado de conversaciones abiertas y eliminar la primera
+	@Test
+	public void PR37() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Eliminar");
+		elementos.get(0).click();
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Diamante:", 2);
+	}
+
+	// PR038. Mostrar el listado de conversaciones abiertas y eliminar la última
+	@Test
+	public void PR38() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Eliminar");
+		elementos.get(elementos.size() - 1).click();
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
+	}
+
+	// PR039.] Identificarse en la aplicación y enviar un mensaje a una oferta,
+	// validar que el mensaje
+	// enviado aparece en el chat. Identificarse después con el usuario propietario
+	// de la oferta y validar
+	// que tiene un mensaje sin leer, entrar en el chat y comprobar que el mensaje
+	// pasa a tener el estado
+	// leído
+	@Test
+	public void PR39() {
+		driver.navigate().to("https://192.168.0.10:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ofertas");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos.get(0).click();
+		PO_ConversationView.fillForm(driver, "Test comentario ");
+		PO_View.checkElement(driver, "text", "Test comentario");
+		elementos = PO_View.checkElement(driver, "text", "Desconectarse");
+		elementos.get(0).click();
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		assertTrue(elementos.get(0).toString() != "0");
+		elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		assertTrue(elementos.get(0).toString() == "0");
+	}
+
+	// PR040. dentificarse en la aplicación y enviar tres mensajes a una oferta,
+	// validar que los mensajes
+	// enviados aparecen en el chat. Identificarse después con el usuario
+	// propietario de la oferta y
+	// validar que el número de mensajes sin leer aparece en su oferta
+	@Test
+	public void PR40() {
+		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "text", "Eliminar");
+		elementos.get(elementos.size() - 1).click();
+		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
+	}
 
 }

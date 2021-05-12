@@ -70,8 +70,7 @@ module.exports = function (app, swig, gestorBD) {
                                         });
                                     }
                                 });
-                            }
-                            else {
+                            } else {
                                 res.redirect("/error" +
                                     "?mensaje=Saldo insuficiente" +
                                     "&tipoMensaje=alert-danger ");
@@ -168,8 +167,13 @@ module.exports = function (app, swig, gestorBD) {
     */
     app.get("/tienda", function (req, res) {
         let criterio = {};
-        if (req.query.busqueda != null) {
-            criterio = {"titulo": {$regex: ".*" + req.query.busqueda.toLowerCase() + ".*"}};
+
+        let busqueda = req.query.busqueda;
+
+
+        if (busqueda != null) {
+            busqueda = busqueda.toLowerCase();
+            criterio = {"titulo": {$regex: ".*" + busqueda.toLowerCase() + ".*"}};
         }
 
         let pg = parseInt(req.query.pg); // Es String !!!
@@ -194,7 +198,8 @@ module.exports = function (app, swig, gestorBD) {
                 res.send(app.get('returnVista')(req, 'btienda.html', {
                     ofertas: ofertas,
                     paginas: paginas,
-                    actual: pg
+                    actual: pg,
+                    busqueda: busqueda
                 }));
             }
         });

@@ -48,7 +48,7 @@
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].receptor + "</td>" +
-                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "')><a> Mensaje </a></td>" +
+                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "','" + ofertasMostrar.ofertas[i].receptor + "')><a> Mensaje </a></td>" +
                     "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
                     "</td>" +
                     "</tr>");
@@ -57,7 +57,7 @@
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].emisor + "</td>" +
-                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "')><a> Mensaje </a></td>" +
+                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "','" + ofertasMostrar.ofertas[i].emisor + "')><a> Mensaje </a></td>" +
                     "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
                     "</td>" +
                     "</tr>");
@@ -65,8 +65,9 @@
         }
     }
 
-    function mensaje(_id) {
-        idOfertaSeleccionada = _id;
+    function mensaje(id, usuario) {
+        idOfertaSeleccionada = id;
+        emailUsuario = usuario;
         $("#contenedor-principal").load("widget-mensaje.html");
     }
 
@@ -87,8 +88,6 @@
             }
         });
     }
-
-
 
     cargarMensajes();
 

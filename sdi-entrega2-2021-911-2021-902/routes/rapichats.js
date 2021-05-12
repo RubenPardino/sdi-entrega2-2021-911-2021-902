@@ -186,7 +186,7 @@ module.exports = function (app, gestorBD) {
         Método POST al que se le manda por el cuerpo la oferta a la que quieres enviar un mensaje, el mensaje
         que quieres enviar, y en caso de ser el propietario de la oferta, el receptor al que le llegará el mensaje.
     */
-    app.post("/api/mensaje/", function (req, res) {
+    app.post("/api/mensaje", function (req, res) {
         if (req.body.oferta == null || req.body.mensaje == null) {
             res.status(500);
             res.json({

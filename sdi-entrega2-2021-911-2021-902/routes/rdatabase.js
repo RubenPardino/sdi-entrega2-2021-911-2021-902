@@ -114,7 +114,7 @@ module.exports = function (app, gestorBD) {
                                     titulo: "oferta0",
                                     precio: 10,
                                     detalles: "detalles de la oferta 0",
-                                    fecha: "2021-05-07",
+                                    fecha: new Date().toISOString().slice(0, 10),
                                     autor: "test1@gmail.com",
                                     destacada: false
                                 }
@@ -124,7 +124,7 @@ module.exports = function (app, gestorBD) {
                                     titulo: "Coche",
                                     precio: 92,
                                     detalles: "detalles del coche",
-                                    fecha: "2021-05-07",
+                                    fecha: new Date().toISOString().slice(0, 10),
                                     autor: "test1@gmail.com",
                                     destacada: false
                                 }
@@ -133,7 +133,7 @@ module.exports = function (app, gestorBD) {
                                     titulo: "Peluche",
                                     precio: 8,
                                     detalles: "detalles del peluche",
-                                    fecha: "2021-05-07",
+                                    fecha: new Date().toISOString().slice(0, 10),
                                     autor: "test1@gmail.com",
                                     destacada: false
                                 }
@@ -142,7 +142,7 @@ module.exports = function (app, gestorBD) {
                                     titulo: "Diamante",
                                     precio: 1000000,
                                     detalles: "detalles del diamante",
-                                    fecha: "2021-05-07",
+                                    fecha: new Date().toISOString().slice(0, 10),
                                     autor: "test1@gmail.com",
                                     destacada: false
                                 }
@@ -151,19 +151,58 @@ module.exports = function (app, gestorBD) {
                                     titulo: "Destacado",
                                     precio: 50,
                                     detalles: "detalles del destacado",
-                                    fecha: "2021-05-07",
+                                    fecha: new Date().toISOString().slice(0, 10),
                                     autor: "destaca@gmail.com",
                                     destacada: false
                                 }
 
-                                let ofertas = [oferta0, oferta1, oferta2, oferta3, oferta4];
+                                let oferta5 = {
+                                    titulo: "Comenta",
+                                    precio: 30,
+                                    detalles: "detalles del comenta",
+                                    fecha: new Date().toISOString().slice(0, 10),
+                                    autor: "destaca@gmail.com",
+                                    destacada: false
+                                }
+
+                                let ofertas = [oferta0, oferta1, oferta2, oferta3, oferta4, oferta5];
 
                                 gestorBD.insertarOferta(ofertas, function (result3) {
                                     if (result3 == null) {
                                         res.send("Error al introducir datos");
                                     } else {
-                                        app.get('logger').debug("Base de datos reiniciada");
-                                        res.send("Datos para test insertados");
+                                        let criterioOferta = { titulo: { $in: ["Diamante", "Destacado", "Comenta"] } }
+
+                                        gestorBD.obtenerOfertas(criterioOferta, function (ofertas) {
+                                            if (ofertas == null) {
+                                                res.send("Error al introducir datos");
+                                            } else {
+
+                                                let mensajes = [];
+
+                                                for (let oferta of ofertas) {
+                                                    let mensaje = {
+                                                        receptor: oferta.autor,
+                                                        emisor: "test2@gmail.com",
+                                                        oferta: oferta._id.toString(),
+                                                        fecha: Date.now(),
+                                                        mensaje: "Mensaje de prueba",
+                                                        leido: false
+                                                    }
+                                                    mensajes.push(mensaje);
+                                                }
+
+                                                gestorBD.insertarComentario(mensajes, function (result4) {
+                                                    if (result4 == null) {
+                                                        res.send("Error al introducir datos");
+                                                    } else {
+                                                        app.get('logger').debug("Base de datos reiniciada");
+                                                        res.send("Datos para test insertados");
+                                                    }
+                                                })
+                                            }
+                                        })
+
                                     }
                                 })
                             }

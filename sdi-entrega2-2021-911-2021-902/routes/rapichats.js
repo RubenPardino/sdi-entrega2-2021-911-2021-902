@@ -133,6 +133,8 @@ module.exports = function (app, gestorBD) {
                 let conversacionesFiltradas = [];
                 let idsConversaciones = [];
 
+                let noleidos = [];
+
                 for (let mensaje of comentarios) {
                     if (mensaje.emisor === res.usuario) {
                         if (!auxConversacionesFiltradas.includes(mensaje.oferta + mensaje.receptor)) {
@@ -140,14 +142,38 @@ module.exports = function (app, gestorBD) {
                             idsConversaciones.push(gestorBD.mongo.ObjectID(mensaje.oferta));
                             conversacionesFiltradas.push(mensaje);
                         }
+
+                        if (noleidos[mensaje.oferta + mensaje.receptor] == null) {
+                            noleidos[mensaje.oferta + mensaje.receptor] = 0;
+                            if (!mensaje.leido) {
+                                noleidos[mensaje.oferta + mensaje.receptor]++;
+                            }
+                        } else {
+                            if (!mensaje.leido) {
+                                noleidos[mensaje.oferta + mensaje.receptor]++;
+                            }
+                        }
+
                     } else {
                         if (!auxConversacionesFiltradas.includes(mensaje.oferta + mensaje.emisor)) {
                             auxConversacionesFiltradas.push(mensaje.oferta + mensaje.emisor);
                             idsConversaciones.push(gestorBD.mongo.ObjectID(mensaje.oferta));
                             conversacionesFiltradas.push(mensaje);
                         }
+
+                        if (noleidos[mensaje.oferta + mensaje.emisor] == null) {
+                            noleidos[mensaje.oferta + mensaje.emisor] = 0;
+                            if (!mensaje.leido) {
+                                noleidos[mensaje.oferta + mensaje.emisor]++;
+                            }
+                        } else {
+                            if (!mensaje.leido) {
+                                noleidos[mensaje.oferta + mensaje.emisor]++;
+                            }
+                        }
                     }
                 }
+
 
                 conversacionesFiltradas.sort((a, b) => a.oferta > b.oferta? 1:-1);
 
@@ -165,14 +191,15 @@ module.exports = function (app, gestorBD) {
                         for (let oferta of ofertas) {
                             titulos.push(oferta);
                         }
-
+                        console.log(noleidos)
                         titulos.sort((a, b) => a._id.toString() > b._id.toString()? 1:-1);
 
                         res.status(201);
                         res.json({
                             "usuario": res.usuario,
                             "ofertas": conversacionesFiltradas,
-                            "titulos": titulos
+                            "titulos": titulos,
+                            "noleidos": noleidos
                         });
                     }
                 })

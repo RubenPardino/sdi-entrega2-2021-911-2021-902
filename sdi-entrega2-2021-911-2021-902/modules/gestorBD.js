@@ -117,7 +117,7 @@ module.exports = {
                 funcionCallback(null);
             } else {
                 let collection = db.collection('comentarios');
-                collection.insertOne(comentario, function (err, result) {
+                collection.insert(comentario, function (err, result) {
                     if (err) {
                         funcionCallback(null);
                     } else {

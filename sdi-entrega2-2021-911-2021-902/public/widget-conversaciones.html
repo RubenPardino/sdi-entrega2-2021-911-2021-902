@@ -5,6 +5,7 @@
         <tr>
             <th>Título</th>
             <th>Email</th>
+            <th>Mensajes no leidos</th>
         </tr>
         </thead>
         <tbody id="tablaCuerpo">
@@ -44,19 +45,25 @@
         $("#tablaCuerpo").empty(); // Vaciar la tabla
         for (i = 0; i < ofertasMostrar.ofertas.length; i++) {
             if (ofertasMostrar.usuario === ofertasMostrar.ofertas[i].emisor) {
+                console.log(ofertasMostrar.ofertas[i].oferta)
+                console.log(ofertasMostrar.ofertas[i].receptor)
                 $("#tablaCuerpo").append(
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].receptor + "</td>" +
+                    "<td>" + ofertasMostrar.noleidos[ofertasMostrar.ofertas[i].oferta + ofertasMostrar.ofertas[i].receptor] + "</td>" +
                     "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "','" + ofertasMostrar.ofertas[i].receptor + "')><a> Mensaje </a></td>" +
                     "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
                     "</td>" +
                     "</tr>");
             } else {
+                console.log(ofertasMostrar.ofertas[i].oferta)
+                console.log(ofertasMostrar.ofertas[i].emisor)
                 $("#tablaCuerpo").append(
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].emisor + "</td>" +
+                    "<td>" + ofertasMostrar.noleidos[ofertasMostrar.ofertas[i].oferta + ofertasMostrar.ofertas[i].emisor] + "</td>" +
                     "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "','" + ofertasMostrar.ofertas[i].emisor + "')><a> Mensaje </a></td>" +
                     "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
                     "</td>" +

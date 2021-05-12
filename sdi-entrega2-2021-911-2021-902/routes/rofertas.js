@@ -145,8 +145,6 @@ module.exports = function (app, swig, gestorBD) {
                     }
                     let criterio = {email: req.session.usuario};
 
-                    console.log(saldoNuevo);
-
                     gestorBD.modificarUsuario(criterio, usuario, function (result) {
                         if (result == null) {
                             res.send("Error al destacar oferta");

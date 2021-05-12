@@ -360,28 +360,24 @@ module.exports = function (app, gestorBD) {
         Método que pone en leído una conversación que le pasas por el cuerpo
     */
     app.post("/api/conversacion/leer", function (req, res) {
-        let criterio = {"oferta": req.body.oferta}
+        let criterio = {"oferta": req.body.oferta, $or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
-            console.log(comentarios)
             if (comentarios == null) {
                 res.status(500);
                 res.json({
                     error: "se ha producido un error al recuperar el comentario"
                 })
             } else {
-                for (let comentario of comentarios) {
-                    if (res.usuario === comentario.receptor || res.usuario === comentario.emisor) {
-                        comentario.leido = true;
-                    } else {
-                        res.status(500);
-                        res.json({
-                            error: "no puedes modificar un mensaje que no es tuyo"
-                        })
-                    }
-                }
-                gestorBD.modificarConversacion(criterio, comentarios, function (result) {
+                let idsMensajes = [];
 
+                for (let comentario of comentarios) {
+                    idsMensajes.push(comentario._id)
+                }
+
+                let criterioConversaciones = { "_id": { $in: idsMensajes } }
+
+                gestorBD.modificarConversacion(criterioConversaciones, { leido: true }, function (result) {
                     if (result == null) {
                         res.status(500);
                         res.json({

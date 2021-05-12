@@ -659,20 +659,34 @@ public class SdiEntrega2Tests {
 		assertTrue(elementos.get(0).toString() == "0");
 	}
 
-	// PR040. dentificarse en la aplicación y enviar tres mensajes a una oferta,
+	// PR040. identificarse en la aplicación y enviar tres mensajes a una oferta,
 	// validar que los mensajes
 	// enviados aparecen en el chat. Identificarse después con el usuario
 	// propietario de la oferta y
 	// validar que el número de mensajes sin leer aparece en su oferta
 	@Test
 	public void PR40() {
-		driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+		driver.navigate().to("https://192.168.0.10:8081/cliente.html?w=login");
 		PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
-		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		List<WebElement> elementos = PO_View.checkElement(driver, "text", "Ofertas");
 		elementos.get(0).click();
-		elementos = PO_View.checkElement(driver, "text", "Eliminar");
-		elementos.get(elementos.size() - 1).click();
-		SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
+		elementos = PO_View.checkElement(driver, "text", "Mensaje");
+		elementos.get(0).click();
+		PO_ConversationView.fillForm(driver, "Test comentario1 ");
+		PO_ConversationView.fillForm(driver, "Test comentario2 ");
+		PO_ConversationView.fillForm(driver, "Test comentario3 ");
+
+		PO_View.checkElement(driver, "text", "Test comentario1");
+		PO_View.checkElement(driver, "text", "Test comentario2");
+		PO_View.checkElement(driver, "text", "Test comentario3");
+
+		elementos = PO_View.checkElement(driver, "text", "Desconectarse");
+		elementos.get(0).click();
+		PO_LoginView.fillForm(driver, "destaca@gmail.com", "1234");
+		elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+		elementos.get(0).click();
+		elementos = PO_View.checkElement(driver, "free", "//table[contains(@name, 'destacadas')]//tbody/tr/td[1]");
+		assertTrue(elementos.get(0).toString() == "3");
 	}
 
 }

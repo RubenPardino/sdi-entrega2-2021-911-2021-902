@@ -25,7 +25,6 @@
             <ul class="nav navbar-nav" id="barra-menu">
                 <li><a onclick=widgetOfertas()>Ofertas</a></li>
                 <li><a onclick=widgetConversaciones()>Conversaciones</a></li>
-
             </ul>
             <ul class="nav navbar-nav navbar-right" id="barra-menu-derecha">
                 <!-- Opciones de menú aqui -->
@@ -46,25 +45,34 @@
     let URLbase = "https://localhost:8081/api";
     $("#contenedor-principal").load("widget-login.html");
 
+    let url = new URL(window.location.href);
+    let w = url.searchParams.get("w");
+
     if (Cookies.get('token') != null) {
         token = Cookies.get('token');
 
-        let url = new URL(window.location.href);
-        let w = url.searchParams.get("w");
-        if (w == "login") {
+        if (w == "login" && token == null) {
             $("#contenedor-principal").load("widget-login.html");
         }
-        if (w == "ofertas") {
+        if (w == "ofertas" && token != null) {
             $("#contenedor-principal").load("widget-ofertas.html");
+        }
+        if (w == null && token != null) {
+            $("#contenedor-principal").load("widget-ofertas.html");
+        }
+        if (w == "conversaciones" && token != null) {
+            $("#contenedor-principal").load("widget-conversaciones.html");
         }
     }
 
     function widgetOfertas() {
-        $("#contenedor-principal").load("widget-ofertas.html");
+        if (token != null)
+            $("#contenedor-principal").load("widget-ofertas.html");
     }
 
     function widgetConversaciones() {
-        $("#contenedor-principal").load("widget-conversaciones.html");
+        if (token != null)
+            $("#contenedor-principal").load("widget-conversaciones.html");
     }
 </script>
 

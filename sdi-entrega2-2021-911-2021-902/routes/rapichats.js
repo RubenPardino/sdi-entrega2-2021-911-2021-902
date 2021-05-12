@@ -134,6 +134,7 @@ module.exports = function (app, gestorBD) {
                 let idsConversaciones = [];
 
                 let noleidos = [];
+                let noleidosNum = [];
 
                 for (let mensaje of comentarios) {
                     if (mensaje.emisor === res.usuario) {
@@ -177,6 +178,13 @@ module.exports = function (app, gestorBD) {
 
                 conversacionesFiltradas.sort((a, b) => a.oferta > b.oferta? 1:-1);
 
+                for (let conversacion of conversacionesFiltradas) {
+                    if (conversacion.emisor === res.usuario)
+                        noleidosNum.push(noleidos[conversacion.oferta + conversacion.receptor]);
+                    else
+                        noleidosNum.push(noleidos[conversacion.oferta + conversacion.emisor]);
+                }
+
                 let criterioOfertas = { "_id": { $in: idsConversaciones }  }
 
                 gestorBD.obtenerOfertas(criterioOfertas, function (ofertas) {
@@ -191,7 +199,7 @@ module.exports = function (app, gestorBD) {
                         for (let oferta of ofertas) {
                             titulos.push(oferta);
                         }
-                        console.log(noleidos)
+                        console.log(noleidosNum)
                         titulos.sort((a, b) => a._id.toString() > b._id.toString()? 1:-1);
 
                         res.status(201);
@@ -199,7 +207,7 @@ module.exports = function (app, gestorBD) {
                             "usuario": res.usuario,
                             "ofertas": conversacionesFiltradas,
                             "titulos": titulos,
-                            "noleidos": noleidos
+                            "noleidos": noleidosNum
                         });
                     }
                 })

@@ -349,6 +349,7 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "Coche");
 		PO_View.checkElement(driver, "text", "Peluche");
 		PO_View.checkElement(driver, "text", "Diamante");
+		PO_View.checkElement(driver, "text", "Destacado");
 	}
 
 	// PR21. Búsqueda inexistente /
@@ -428,8 +429,6 @@ public class SdiEntrega2Tests {
 		PO_View.checkElement(driver, "text", "Peluche");
 		PO_View.checkElement(driver, "text", "Coche");
 	}
-	
-	//-----------------------------------------------------------------------------------------HASTA AQUÍ POR AHORA LA BASE DE DATOS
 
 	// PR27. Al crear una oferta marcar dicha oferta como destacada y a continuación
 	// comprobar: i)
@@ -582,6 +581,42 @@ public class SdiEntrega2Tests {
 			By boton = By.className("btn");
 			driver.findElement(boton).click();
 			PO_View.checkElement(driver, "text", "prueba de comentario en una conversación ya creada");
+		}
+		
+		// PR036. Mostrar el listado de conversaciones abiertas y comprobar que están todas
+		@Test
+		public void PR36() {
+			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+			elementos.get(0).click();
+			PO_View.checkElement(driver, "text", "Diamante");
+			PO_View.checkElement(driver, "text", "Destacado");
+			PO_View.checkElement(driver, "text", "Comenta");
+		}
+		
+		// PR037. Mostrar el listado de conversaciones abiertas y eliminar la primera
+		@Test
+		public void PR37() {
+			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+			elementos.get(0).click();
+			elementos = PO_View.checkElement(driver, "text", "Eliminar");
+			elementos.get(0).click();
+			SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Diamante:", 2);
+		}
+		
+		// PR038. Mostrar el listado de conversaciones abiertas y eliminar la última
+		@Test
+		public void PR38() {
+			driver.navigate().to("https://localhost:8081/cliente.html?w=login");
+			PO_LoginView.fillForm(driver, "test2@gmail.com", "1234");
+			List<WebElement> elementos = PO_View.checkElement(driver, "text", "Conversaciones");
+			elementos.get(0).click();
+			elementos = PO_View.checkElement(driver, "text", "Eliminar");
+			elementos.get(elementos.size()-1).click();
+			SeleniumUtils.EsperaCargaPaginaNoTexto(driver, "Comenta:", 2);
 		}
 
 }

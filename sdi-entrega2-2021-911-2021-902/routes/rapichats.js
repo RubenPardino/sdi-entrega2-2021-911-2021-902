@@ -129,47 +129,54 @@ module.exports = function (app, gestorBD) {
                     error: "se ha producido un error al recuperar los comentarios"
                 })
             } else {
-                let comentariosPropietario = [];
-                let comentariosInteresado = [];
-                let offers = [];
-                let idscomentariosFiltrados = [];
+                let auxConversacionesFiltradas = [];
+                let conversacionesFiltradas = [];
+                let idsConversaciones = [];
 
-                let i = 1;
-
-                for (let comentario of comentarios) {
-
-                    let criterioOferta = {"_id": gestorBD.mongo.ObjectID(comentario.oferta)}
-
-                    gestorBD.obtenerOfertas(criterioOferta, function (oferta) {
-                        if (oferta == null) {
-                            res.status(500);
-                            res.json({
-                                error: "se ha producido un error al comprobar las ofertas de los comentarios"
-                            })
-                        } else {
-                            i++;
-                            if (!idscomentariosFiltrados.includes(comentario.oferta)) {
-                                idscomentariosFiltrados.push(comentario.oferta)
-
-                                offers.push(oferta);
-                                if (oferta[0].autor === res.usuario) {
-                                    comentariosPropietario.push(comentario);
-                                } else {
-                                    comentariosInteresado.push(comentario);
-                                }
-
-                                if (i === comentarios.length) {
-                                    res.status(200);
-                                    res.send({
-                                        propietario: JSON.stringify(comentariosPropietario),
-                                        interesado: comentariosInteresado,
-                                        oferta: offers
-                                    });
-                                }
-                            }
+                for (let mensaje of comentarios) {
+                    if (mensaje.emisor === res.usuario) {
+                        if (!auxConversacionesFiltradas.includes(mensaje.oferta + mensaje.receptor)) {
+                            auxConversacionesFiltradas.push(mensaje.oferta + mensaje.receptor);
+                            idsConversaciones.push(gestorBD.mongo.ObjectID(mensaje.oferta));
+                            conversacionesFiltradas.push(mensaje);
                         }
-                    })
+                    } else {
+                        if (!auxConversacionesFiltradas.includes(mensaje.oferta + mensaje.emisor)) {
+                            auxConversacionesFiltradas.push(mensaje.oferta + mensaje.emisor);
+                            idsConversaciones.push(gestorBD.mongo.ObjectID(mensaje.oferta));
+                            conversacionesFiltradas.push(mensaje);
+                        }
+                    }
                 }
+
+                conversacionesFiltradas.sort((a, b) => a.oferta > b.oferta? 1:-1);
+
+                let criterioOfertas = { "_id": { $in: idsConversaciones }  }
+
+                gestorBD.obtenerOfertas(criterioOfertas, function (ofertas) {
+                    if (ofertas == null) {
+                        res.status(500);
+                        res.json({
+                            error: "se ha producido un error al recuperar las ofertas"
+                        })
+                    } else {
+                        let titulos = [];
+
+                        for (let oferta of ofertas) {
+                            titulos.push(oferta);
+                        }
+
+                        titulos.sort((a, b) => a._id.toString() > b._id.toString()? 1:-1);
+
+                        res.status(201);
+                        res.json({
+                            "usuario": res.usuario,
+                            "ofertas": conversacionesFiltradas,
+                            "titulos": titulos
+                        });
+                    }
+                })
+
             }
         })
     })

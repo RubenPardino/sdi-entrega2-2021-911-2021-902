@@ -30,6 +30,7 @@
             headers: {"token": token},
             success: function (respuesta) {
                 mensajes = respuesta;
+                console.log(mensajes)
                 actualizarTabla(mensajes);
             },
             error: function (error) {
@@ -40,20 +41,27 @@
 
     function actualizarTabla(ofertasMostrar) {
 
-        console.log(ofertasMostrar)
-
         $("#tablaCuerpo").empty(); // Vaciar la tabla
-        console.log(ofertasMostrar)
-        for (i = 0; i < ofertasMostrar.interesado.length; i++) {
-
-            $("#tablaCuerpo").append(
-                "<tr>" +
-                "<td>" + ofertasMostrar.oferta[i][0].titulo + "</td>" +
-                "<td>" + ofertasMostrar.interesado[i].receptor + "</td>" +
-                "<td onclick=mensaje('" + ofertasMostrar.interesado[i].oferta + "')><a> Mensaje </a></td>" +
-                "<td onclick=eliminar('" + ofertasMostrar.interesado[i]._id + "')><a> Eliminar </a></td>" +
-                "</td>" +
-                "</tr>");
+        for (i = 0; i < ofertasMostrar.ofertas.length; i++) {
+            if (ofertasMostrar.usuario === ofertasMostrar.ofertas[i].emisor) {
+                $("#tablaCuerpo").append(
+                    "<tr>" +
+                    "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
+                    "<td>" + ofertasMostrar.ofertas[i].receptor + "</td>" +
+                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "')><a> Mensaje </a></td>" +
+                    "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
+                    "</td>" +
+                    "</tr>");
+            } else {
+                $("#tablaCuerpo").append(
+                    "<tr>" +
+                    "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
+                    "<td>" + ofertasMostrar.ofertas[i].emisor + "</td>" +
+                    "<td onclick=mensaje('" + ofertasMostrar.ofertas[i].oferta + "')><a> Mensaje </a></td>" +
+                    "<td onclick=eliminar('" + ofertasMostrar.ofertas[i]._id + "')><a> Eliminar </a></td>" +
+                    "</td>" +
+                    "</tr>");
+            }
         }
     }
 
@@ -83,7 +91,5 @@
 
 
     cargarMensajes();
-
-
 
 </script>

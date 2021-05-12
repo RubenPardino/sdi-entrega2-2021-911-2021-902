@@ -6,8 +6,6 @@
             <th>Emisor</th>
             <th>Receptor</th>
             <th>Fecha</th>
-
-
         </tr>
         </thead>
         <tbody id="tablaCuerpo">
@@ -22,7 +20,6 @@
                    value="Comentario"/>
         </div>
 
-
         <button type="button" class="btn btn-primary" id="boton-agregar"
                 onclick="agregarMensaje()">Enviar
         </button>
@@ -35,6 +32,9 @@
 
     if (intervalID != null)
         clearInterval(intervalID);
+
+    if (intervalIDLeidos != null)
+        clearInterval(intervalIDLeidos);
 
     function agregarMensaje() {
         $.ajax({

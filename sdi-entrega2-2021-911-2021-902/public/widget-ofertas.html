@@ -19,6 +19,9 @@
     if (intervalID != null)
         clearInterval(intervalID);
 
+    if (intervalIDLeidos != null)
+        clearInterval(intervalIDLeidos);
+
     window.history.pushState("", "", "/cliente.html?w=ofertas");
 
     var ofertas;

@@ -17,7 +17,10 @@ module.exports = function (app, swig, gestorBD) {
         Método que te redirige a la vista de logeo
     */
     app.get("/identificarse", function (req, res) {
-        res.send(app.get('returnVista')(req, 'bidentificacion.html', null));
+        if (req.session.usuario == null)
+            res.send(app.get('returnVista')(req, 'bidentificacion.html', null));
+        else
+            res.redirect("/publicaciones");
     });
 
     /*
@@ -105,7 +108,7 @@ module.exports = function (app, swig, gestorBD) {
                 password: seguro
             }
             gestorBD.obtenerUsuarios(criterio, function (usuarios) {
-                if (usuarios == null || usuarios.length == 0 ) {
+                if (usuarios == null || usuarios.length == 0) {
                     gestorBD.insertarUsuario(usuario, function (id) {
                         if (id == null) {
                             res.redirect("/error" +

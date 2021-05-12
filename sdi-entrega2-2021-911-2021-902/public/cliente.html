@@ -54,6 +54,9 @@
         if (w == "login" && token == null) {
             $("#contenedor-principal").load("widget-login.html");
         }
+        if (w == "login" && token != null) {
+            $("#contenedor-principal").load("widget-ofertas.html");
+        }
         if (w == "ofertas" && token != null) {
             $("#contenedor-principal").load("widget-ofertas.html");
         }

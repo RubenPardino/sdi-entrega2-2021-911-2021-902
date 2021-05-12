@@ -84,7 +84,7 @@
 
     function widgetDesconectarse() {
         if (token != null) {
-            Cookies.remove('token');
+            token = null;
             $("#contenedor-principal").load("widget-login.html");
         }
 

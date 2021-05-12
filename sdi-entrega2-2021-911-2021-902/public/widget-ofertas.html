@@ -9,7 +9,7 @@
             <th class="col-md-1"></th>
         </tr>
         </thead>
-        <tbody id="tablaCuerpo">
+        <tbody id="tablaCuerpoOfertas">
 
         </tbody>
     </table>
@@ -44,9 +44,9 @@
     }
 
     function actualizarTabla(ofertasMostrar) {
-        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        $("#tablaCuerpoOfertas").empty(); // Vaciar la tabla
         for (i = 0; i < ofertasMostrar.length; i++) {
-            $("#tablaCuerpo").append(
+            $("#tablaCuerpoOfertas").append(
                 "<tr id=" + ofertasMostrar[i]._id + ">" +
                 "<td>" + ofertasMostrar[i].titulo + "</td>" +
                 "<td>" + ofertasMostrar[i].detalles + "</td>" +
@@ -63,6 +63,7 @@
 
     function mensaje(_id) {
         idOfertaSeleccionada = _id;
+        emailUsuario = null;
         $("#contenedor-principal").load("widget-mensaje.html");
     }
 

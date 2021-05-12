@@ -8,7 +8,7 @@
             <th>Mensajes no leidos</th>
         </tr>
         </thead>
-        <tbody id="tablaCuerpo">
+        <tbody id="tablaCuerpoConversaciones">
 
         </tbody>
     </table>
@@ -25,7 +25,7 @@
 
     var mensajes;
 
-    function cargarMensajes() {
+    function cargarConversaciones() {
         $.ajax({
             url: URLbase + "/conversaciones/iniciadas",
             type: "GET",
@@ -45,10 +45,10 @@
 
     function actualizarTabla(ofertasMostrar) {
 
-        $("#tablaCuerpo").empty(); // Vaciar la tabla
+        $("#tablaCuerpoConversaciones").empty(); // Vaciar la tabla
         for (i = 0; i < ofertasMostrar.ofertas.length; i++) {
             if (ofertasMostrar.usuario === ofertasMostrar.ofertas[i].emisor) {
-                $("#tablaCuerpo").append(
+                $("#tablaCuerpoConversaciones").append(
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].receptor + "</td>" +
@@ -58,7 +58,7 @@
                     "</td>" +
                     "</tr>");
             } else {
-                $("#tablaCuerpo").append(
+                $("#tablaCuerpoConversaciones").append(
                     "<tr>" +
                     "<td>" + ofertasMostrar.titulos[i].titulo + "</td>" +
                     "<td>" + ofertasMostrar.ofertas[i].emisor + "</td>" +
@@ -95,7 +95,7 @@
         });
     }
 
-    intervalIDLeidos = setInterval(cargarMensajes,1000);
+    intervalIDLeidos = setInterval(cargarConversaciones,1000);
 
 
 </script>

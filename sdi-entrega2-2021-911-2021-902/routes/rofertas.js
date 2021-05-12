@@ -267,7 +267,7 @@ module.exports = function (app, swig, gestorBD) {
 
         console.log(req.body.destacada);
 
-        if (req.body.destacada) {
+        if (req.body.destacada != null) {
             destacada = true;
         }
 
@@ -295,11 +295,12 @@ module.exports = function (app, swig, gestorBD) {
                 }
                 let criterio = {email: req.session.usuario};
 
+                req.session.saldo = saldoNuevo;
+
                 gestorBD.modificarUsuario(criterio, usuario, function (result) {
                     if (result == null) {
+                        req.session.saldo = req.session.saldo + 20;
                         res.send("Error al crear oferta");
-                    } else {
-                        req.session.saldo = saldoNuevo;
                     }
                 });
             } else {

@@ -129,6 +129,7 @@ module.exports = function (app, gestorBD) {
                     error: "se ha producido un error al recuperar los comentarios"
                 })
             } else {
+                console.log(comentarios);
                 let auxConversacionesFiltradas = [];
                 let conversacionesFiltradas = [];
                 let idsConversaciones = [];
@@ -142,17 +143,6 @@ module.exports = function (app, gestorBD) {
                             auxConversacionesFiltradas.push(mensaje.oferta + mensaje.receptor);
                             idsConversaciones.push(gestorBD.mongo.ObjectID(mensaje.oferta));
                             conversacionesFiltradas.push(mensaje);
-                        }
-
-                        if (noleidos[mensaje.oferta + mensaje.receptor] == null) {
-                            noleidos[mensaje.oferta + mensaje.receptor] = 0;
-                            if (!mensaje.leido) {
-                                noleidos[mensaje.oferta + mensaje.receptor]++;
-                            }
-                        } else {
-                            if (!mensaje.leido) {
-                                noleidos[mensaje.oferta + mensaje.receptor]++;
-                            }
                         }
 
                     } else {
@@ -179,8 +169,12 @@ module.exports = function (app, gestorBD) {
                 conversacionesFiltradas.sort((a, b) => a.oferta > b.oferta? 1:-1);
 
                 for (let conversacion of conversacionesFiltradas) {
-                    if (conversacion.emisor === res.usuario)
-                        noleidosNum.push(noleidos[conversacion.oferta + conversacion.receptor]);
+                    if (conversacion.emisor === res.usuario) {
+                        if (noleidos[conversacion.oferta + conversacion.receptor] == null)
+                            noleidosNum.push(0);
+                        else
+                            noleidosNum.push(noleidos[conversacion.oferta + conversacion.receptor]);
+                    }
                     else
                         noleidosNum.push(noleidos[conversacion.oferta + conversacion.emisor]);
                 }
@@ -395,7 +389,7 @@ module.exports = function (app, gestorBD) {
         Método que pone en leído una conversación que le pasas por el cuerpo
     */
     app.post("/api/conversacion/leer", function (req, res) {
-        let criterio = {"oferta": req.body.oferta, $or: [{"emisor": res.usuario}, {"receptor": res.usuario}]}
+        let criterio = {"oferta": req.body.oferta, "receptor": res.usuario}
 
         gestorBD.obtenerComentarios(criterio, function (comentarios) {
             if (comentarios == null) {

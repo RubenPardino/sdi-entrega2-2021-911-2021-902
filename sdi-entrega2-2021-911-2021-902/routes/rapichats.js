@@ -199,7 +199,7 @@ module.exports = function (app, gestorBD) {
                         for (let oferta of ofertas) {
                             titulos.push(oferta);
                         }
-                        console.log(noleidosNum)
+
                         titulos.sort((a, b) => a._id.toString() > b._id.toString()? 1:-1);
 
                         res.status(201);
